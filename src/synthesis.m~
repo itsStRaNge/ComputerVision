@@ -1,0 +1,14 @@
+function [Im3] = synthesis(Im1, disparity, p)
+% Based on Disparitymap and rate of shift p
+% create a new Image Im3 with a camera on position O3
+Im3 = zeros(size(Im1));
+
+for x=1:size(disparity, 1)
+    for y =1:size(disparity, 2)
+        pos = x + disparity(x, y) * p;
+        Im3 = Im1(pos, y);
+    end
+end
+Im3 = Im1 + disparity * p;
+end
+
