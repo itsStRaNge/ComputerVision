@@ -1,6 +1,6 @@
 function test_cv_rectify()
-IL = imread('images/Sport0.png');
-IR = imread('images/Sport1.png');
+IL = imread('L1.JPG');
+IR = imread('R1.JPG');
 
 load('data/calibration');
 

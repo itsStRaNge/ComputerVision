@@ -9,7 +9,8 @@ P2 = projection(K, eye(3,3), [3,2,0]);
 
 [TL, TR, ~, ~] = rectification(P1, P2);
 
-
+% schaun warum diese funktion hier komsiche werte ausgibt und bei der lib
+% nicht...
 bb = mcbb(size(IL),size(IR), TL, TR);
 
 % Warp Images
