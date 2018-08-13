@@ -1,22 +1,23 @@
 function test_rectification()
-
-IL = rgb2gray(imread('L1.JPG'));
-IR = rgb2gray(imread('R1.JPG'));
+%% load and prepare data
+IL = imread('L1.JPG');
+IR = imread('R1.JPG');
 load('camera_param', 'params');
 K = params.IntrinsicMatrix';
 P1 = projection(K, eye(3,3), [0,0,0]);
 P2 = projection(K, eye(3,3), [3,2,0]);
 
-[TL, TR, ~, ~] = rectification(P1, P2);
+%% compute homography matrices
+[HL, HR, ~, ~] = rectification(P1, P2);
 
-% schaun warum diese funktion hier komsiche werte ausgibt und bei der lib
-% nicht...
-bb = mcbb(size(IL),size(IR), TL, TR);
+%% apply homography matrix HL and HR to images
+tform = projective2d(HL); 
+JL = imwarp(IL, tform);
 
-% Warp Images
-[JL,~,~] = imwarp(IL, TL, 'bilinear', bb);
-[JR,~,~] = imwarp(IR, TR, 'bilinear', bb);
+tform = projective2d(HR); 
+JR = imwarp(IR, tform);
 
+%% plot original and rectified images
 subplot(2,2,1);
 imshow(IL);
 subplot(2,2,2);

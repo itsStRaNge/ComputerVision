@@ -25,7 +25,8 @@ dL(2) = dR(2);
 
 % find the smallest bb containining both images
 bb = mcbb(size(IL),size(IR), TL, TR);
-
+TL
+TR
 % warp RGB channels,
 for c = 1:3
 

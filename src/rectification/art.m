@@ -1,5 +1,5 @@
 function [A,R,t] = art(P)
-% ART: factorize a PPM as  P=A*[R;t]
+%% reverse projection
 Q = inv(P(1:3, 1:3));
 [U,B] = qr(Q);
 R = inv(U);

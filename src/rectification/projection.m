@@ -1,4 +1,5 @@
 function P = projection(K,R,T)
+%% create perspective projection matrix
 pi = [1 0 0 0;
       0 1 0 0;
       0 0 1 0];
