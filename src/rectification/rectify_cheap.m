@@ -1,7 +1,9 @@
 function [JL, JR] = rectify_cheap(IL, PL, IR, PR)
-%% compute and apply homography
+% Note: in algo c1 and c2 are the same, so Homography cannot be computed...
+%% compute homography
 [HL, HR, ~, ~] = rectify_cheap_algo(PL, PR);
 
+%% apply homography
 tform = projective2d(HL);
 JL = imwarp(IL,tform);
 
@@ -10,13 +12,16 @@ JR = imwarp(IR, tform);
 end
 
 function [T1,T2,Pn1,Pn2] = rectify_cheap_algo(Po1,Po2)
-% factorize old PPMs
+% source 'A compact algorithm for rectification of stereo pairs'
+% http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.45.8804&rep=rep1&type=pdf
+
+%% factorize old PPMs
 [A1,R1,t1] = art(Po1);
 [A2,R2,t2] = art(Po2);
 
 %% optical centers (unchanged)
 c1 = - inv(Po1(:,1:3))*Po1(:,4);
-c2 = inv(Po2(:,1:3))*Po2(:,4); % original multiply with -1 but then v = 0..
+c2 = - inv(Po2(:,1:3))*Po2(:,4);
 
 %% new x axis (= direction of the baseline)
  v1 = (c1-c2);
