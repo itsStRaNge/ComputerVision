@@ -25,16 +25,15 @@ dL(2) = dR(2);
 
 % find the smallest bb containining both images
 bb = mcbb(size(IL),size(IR), TL, TR);
-TL
-TR
+
 % warp RGB channels,
-for c = 1:3
+for c = 1:size(IL, 3)
 
     % Warp LEFT
-    [JL(:,:,c),~,~] = imwarp(IL(:,:,c), TL, 'bilinear', bb);
+    [JL(:,:,c),~,~] = my_imwarp(IL(:,:,c), TL, 'bilinear', bb);
 
     % Warp RIGHT
-    [JR(:,:,c),~,~] = imwarp(IR(:,:,c), TR, 'bilinear', bb);
+    [JR(:,:,c),~,~] = my_imwarp(IR(:,:,c), TR, 'bilinear', bb);
 
 end
 

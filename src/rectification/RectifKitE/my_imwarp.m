@@ -1,4 +1,4 @@
-function [I2, bb, alpha] = imwarp(I,H,meth,sz)
+function [I2, bb, alpha] = my_imwarp(I,H,meth,sz)
 %IMWARP Image Warping
 %   I2 = imwarp(I,H) apply the projective transformation specified by H to
 %   the image I using linear interpolation. The output image I2 has the

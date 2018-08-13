@@ -3,7 +3,6 @@ IL = imread('L1.JPG');
 IR = imread('R1.JPG');
 
 load('data/calibration');
-params.IntrinsicMatrix
 [JL, JR] = cv_rectify(IL, KL, IR, KR);
 
 

@@ -1,59 +1,25 @@
-function [H1, H2, Pn1, Pn2] = rectification(Po1, Po2)
-% RECTIFICATION source
-% https://www.researchgate.net/publication/2841773_Tutorial_on_Rectification_of_Stereo_Images
+function [JL, JR] = rectification(IL, IR, R, T, K, mode)
+%% available modes ['kit', 'svd', 'cheap']
 
-%% focal length
-au = norm(cross(Po1(1,1:3)', Po1(3,1:3)'));
-av = norm(cross(Po1(2,1:3)', Po1(3,1:3)'));
+%% create projection matrix
+pi = [1 0 0 0; 0 1 0 0; 0 0 1 0];
+[yaw, pitch, roll] = euler_angles(R);
+R_half = euler_rotation(yaw/2, pitch/2, roll/2);
+M = [R_half, (T/2)'; 0, 0, 0, 1];
 
-%% potical centers
-c1 = - inv(Po1(:, 1:3)) * Po1(:,4);
-c2 = - inv(Po2(:, 1:3)) * Po2(:,4); 
+PL = K * pi * M;
+PR = K * pi * -M;
 
-%% retinal planes
-fl = Po1(3, 1:3);
-fr = Po2(3, 1:3);
-
-nn = cross(fl, fr);
-
-%% solve the four system
-A = [[c1' 1]' [c2' 1]' [nn 0]' ]';
-[U, S, V] = svd(A);
-r = 1/(norm(V([1 2 3], 4)));
-a3 = r * V(:, 4);
-
-A = [[c1' 1]' [c2' 1]' [a3(1:3)' 0]' ]';
-[U, S, V] = svd(A);
-r = norm(av)/(norm(V([1 2 3], 4)));
-a2 = r * V(:, 4);
-
-A = [[c1' 1]' [a2(1:3)' 0]' [a3(1:3)' 0]' ]';
-[U, S, V] = svd(A);
-r = norm(au)/(norm(V([1 2 3], 4)));
-a1 = r * V(:, 4);
-
-A = [[c2' 1]' [a2(1:3)' 1]' [a3(1:3)' 0]' ]';
-[U, S, V] = svd(A);
-r = norm(au)/(norm(V([1 2 3], 4)));
-b1 = r * V(:, 4);
-
-
-%% rectifying projection matrices
-H = eye(3,3);
-
-Pn1 = H * [a1 a2 a3]';
-Pn2 = H * [b1 a2 a3]';
-
-%% rectifying image transformation
-H1 = Pn1(1:3, 1:3) / Po1(1:3, 1:3);
-H2 = Pn2(1:3, 1:3) / Po2(1:3, 1:3);
-
-%% create homography matrix
-[U, S, V] = svd(H1);
-H1 = U * (S / S(2,2)) * V;
-abs(H1);
-[U, S, V] = svd(H2);
-H2 = U * (S / S(2,2)) * V;
-abs(H2);
+%% get rectification mode
+if strcmp(mode, 'kit')
+    [JL, JR] = cv_rectify(IL, PL, IR, PR);
+elseif strcmp(mode, 'svd')
+    [JL, JR] = rectify_svd(IL, PL, IR, PR);
+elseif strcmp(mode, 'cheap')
+    [JL, JR] = rectify_cheap(IL, PL, IR, PR);
+else
+    disp('Invalid Mode selected')
+    JL = zeros(size(IL));
+    JR = zeros(size(IR));
 end
 

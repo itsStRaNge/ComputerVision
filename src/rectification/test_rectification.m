@@ -1,21 +1,27 @@
 function test_rectification()
-%% load and prepare data
-IL = imread('L1.JPG');
-IR = imread('R1.JPG');
+%% load data
+IL = rgb2gray(imread('L1.JPG'));
+IR = rgb2gray(imread('R1.JPG'));
 load('camera_param', 'params');
 K = params.IntrinsicMatrix';
-P1 = projection(K, eye(3,3), [0,0,0]);
-P2 = projection(K, eye(3,3), [3,2,0]);
 
-%% compute homography matrices
-[HL, HR, ~, ~] = rectification(P1, P2);
+%% get essential matrix
+imagePoints1 = detectSURFFeatures(IL);
+imagePoints2 = detectSURFFeatures(IR);
+features1 = extractFeatures(IL,imagePoints1,'Upright',true);
+features2 = extractFeatures(IR,imagePoints2,'Upright',true);
+indexPairs = matchFeatures(features1,features2);
+matchedPoints1 = imagePoints1(indexPairs(:,1));
+matchedPoints2 = imagePoints2(indexPairs(:,2));
+[E,~] = estimateEssentialMatrix(matchedPoints1,matchedPoints2,params);
 
-%% apply homography matrix HL and HR to images
-tform = projective2d(HL); 
-JL = imwarp(IL, tform);
+%% get rotation and translation
+[R,T] = relativeCameraPose(E,params,matchedPoints1,matchedPoints2);
 
-tform = projective2d(HR); 
-JR = imwarp(IR, tform);
+
+%% get rectified images
+[JL, JR] = rectification(IL, IR, R, T, K,'kit');
+
 
 %% plot original and rectified images
 subplot(2,2,1);
@@ -27,4 +33,3 @@ imshow(JL);
 subplot(2,2,4);
 imshow(JR);
 end
-

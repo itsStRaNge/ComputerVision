@@ -1,4 +1,4 @@
-function [A,R,t]=art(P,fsign)
+function [A,R,t]=my_art(P,fsign)
 %ART  Factorize camera matrix into intrinsic and extrinsic matrices
 %
 %   [A,R,t] = art(P,fsign)  factorize the projection matrix P

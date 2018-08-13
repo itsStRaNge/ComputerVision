@@ -26,8 +26,8 @@ if d1(2) ~= d2(2)
 end
 
 % factorise old PPM 
-[A1,R1,t1] = art(Po1);
-[A2,R2,t2] = art(Po2);
+[A1,R1,t1] = my_art(Po1);
+[A2,R2,t2] = my_art(Po2);
 
 % optical centers (unchanged)
 c1 = - R1'*inv(A1)*Po1(:,4);
