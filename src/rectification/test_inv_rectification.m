@@ -1,4 +1,4 @@
-function test_rectification()
+function test_inv_rectification()
 %% load data
 IL = rgb2gray(imread('L1.JPG'));
 IR = rgb2gray(imread('R1.JPG'));
@@ -20,8 +20,10 @@ matchedPoints2 = imagePoints2(indexPairs(:,2));
 
 
 %% get rectified images
-[JL, JR] = rectification(IL, IR, R, T, K,'svd');
+[JL, JR, HL, HR] = rectification(IL, IR, R, T, K,'kit');
 
+%% inverse rectification
+[IL1, IR1] = cv_inv_rectify(JL, HL, JR, HR);
 
 %% plot original and rectified images
 subplot(2,2,1);
@@ -29,7 +31,7 @@ imshow(IL);
 subplot(2,2,2);
 imshow(IR);
 subplot(2,2,3);
-imshow(JL);
+imshow(IL1);
 subplot(2,2,4);
-imshow(JR);
+imshow(IR1);
 end

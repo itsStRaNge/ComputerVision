@@ -1,4 +1,4 @@
-function [JL, JR] = rectification(IL, IR, R, T, K, mode)
+function [JL, JR, HL, HR] = rectification(IL, IR, R, T, K, mode)
 %% available modes ['kit', 'svd', 'cheap']
 
 %% create projection matrix
@@ -12,14 +12,16 @@ PR = K * pi * -M;
 
 %% get rectification mode
 if strcmp(mode, 'kit')
-    [JL, JR] = cv_rectify(IL, PL, IR, PR);
+    [JL, JR, HL, HR] = cv_rectify(IL, PL, IR, PR);
 elseif strcmp(mode, 'svd')
-    [JL, JR] = rectify_svd(IL, PL, IR, PR);
+    [JL, JR, HL, HR] = rectify_svd(IL, PL, IR, PR);
 elseif strcmp(mode, 'cheap')
-    [JL, JR] = rectify_cheap(IL, PL, IR, PR);
+    [JL, JR, HL, HR] = rectify_cheap(IL, PL, IR, PR);
 else
     disp('Invalid Mode selected')
     JL = zeros(size(IL));
     JR = zeros(size(IR));
+    HL = zeros(3,3);
+    HR = zeros(3,3);
 end
 

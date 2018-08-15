@@ -1,4 +1,4 @@
-function [JL, JR] = rectify_cheap(IL, PL, IR, PR)
+function [JL, JR, HL, HR] = rectify_cheap(IL, PL, IR, PR)
 % Note: in algo c1 and c2 are the same, so Homography cannot be computed...
 %% compute homography
 [HL, HR, ~, ~] = rectify_cheap_algo(PL, PR);

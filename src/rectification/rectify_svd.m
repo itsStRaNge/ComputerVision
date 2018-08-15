@@ -1,9 +1,9 @@
-function [JL, JR] = rectify_svd(IL, PL, IR, PR)
+function [JL, JR, HL, HR] = rectify_svd(IL, PL, IR, PR)
 % source 'Tutorial on Rectification of Stereo Images'
 % https://www.researchgate.net/publication/2841773_Tutorial_on_Rectification_of_Stereo_Images
 
 % Note: ich weiß nicht, ob HL und HR falsch sind, oder ob imwarp etwas
-% komisches macht, weil imwarp gibt immer nur 0 zurück
+% komisches macht, weil imwarp gibt immer nur 0 zur�ck
 [HL, HR, ~, ~] = rectify_svd_algo(PL, PR);
 
 tform = projective2d(HL);
