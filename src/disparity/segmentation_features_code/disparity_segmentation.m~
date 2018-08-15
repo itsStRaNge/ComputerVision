@@ -1,0 +1,480 @@
+%%%%  finding surf points and matching between two image %%%%%%
+%% The two images are matched using SURF detection and then these points are used to match segments%%
+function [filld] = disparity_segmentation(leftrgb,rightrgb)
+
+ %leftrgb=imread('imL.png');                   %left image
+ %rightrgb=imread('imR.png');              %right image
+ 
+ [row_img_big, col_img_big]=size(rgb2gray(leftrgb));                        %size of input image
+ 
+%  leftrgb=imcrop(leftrgb1,[15 15 col_img_big-25 row_img_big-25]);            %cropping image
+%  rightrgb=imcrop(rightrgb1,[15 15 col_img_big-25 row_img_big-25]);
+
+ left=rgb2gray(leftrgb);      
+ right=rgb2gray(rightrgb);
+
+[row_img, col_img]=size(left);
+
+%%%%%% Detecting surf feature points%%%%%%%%%%
+
+points_left = detectSURFFeatures(left,'MetricThreshold',10,'NumScaleLevels',20,'NumOctaves',8);
+[features_left, valid_points_left] = extractFeatures(left, points_left);
+
+points_right = detectSURFFeatures(right,'MetricThreshold',10,'NumScaleLevels',20,'NumOctaves',8);
+[features_right, valid_points_right] = extractFeatures(right, points_right);
+
+indexPairs = matchFeatures(features_left,features_right);
+cord_left=points_left(indexPairs(:,1)).Location;
+cord_right=points_right(indexPairs(:,2)).Location;
+
+[row,col]=size(cord_left);
+index=find(abs(((cord_left(:,2)-cord_right(:,2))))<1);
+cord_left1=cord_left(index,:);
+cord_right1=cord_right(index,:);
+
+figure(1); showMatchedFeatures(left,right,cord_left1,cord_right1,'PlotOptions',{'ro','go','y'});          
+  
+M=zeros(row_img,col_img);
+        
+M(sub2ind(size(M),floor(cord_left1(:,2)),floor(cord_left1(:,1))))=abs(floor(cord_left1(:,1)-cord_right1(:,1)));
+[r , c, disp ]=find(M) ;
+
+Bin_nos = 17;
+seg_left = opti_rgb2segcell(leftrgb,Bin_nos);       %function converts left rgb image to segments.
+seg_right = opti_rgb2segcell(rightrgb,Bin_nos);   %function converts right rgb image to segments.
+
+d_left=[c,r];
+d_right=[c-disp,r];
+final_match_l=zeros(37,2);
+
+for i=1:length(seg_left)            % traversing all left segments
+   
+[r_seg, c_seg]=find(seg_left{i}) ;             % finding the coordinates of all the nonzero points in various segments
+d_seg=[c_seg r_seg];
+[q,index_disp_seg]=ismember(d_seg,d_left,'rows');     % searching the disparity1 points present in the 'i'th segment 
+      
+
+        if (max(q)~=0)                                                              % proceed further if there exist any disparity1 point
+                    valid_points_l=find(index_disp_seg>0);            
+                    d_seg1_l=d_seg(valid_points_l,:);         
+                    length_dseg1_l=length(d_seg1_l) ;                %obtaining the disparity1 points present in the segment                 
+m_l=1;
+while( m_l<(length(d_seg1_l)))                                             % traversing whole disparity1 points present in the segment for obtaining correspondence
+    
+                   [ q1_l,index_left_l]=ismember(d_left,d_seg1_l(m_l,:),'rows');   % finding each diaprity point in the completet image disparity1 points 
+                    valid_points_right=find(index_left_l>0);
+                    
+                    r_right=d_left(valid_points_right,1)-disp(valid_points_right);
+                    c_right=d_left(valid_points_right,2);                           % obtaining their correspondence in the right image
+                    d_right1=[r_right,c_right];
+                    index_match_l=zeros(length(seg_right),1);
+
+for k_l=1:length(seg_right)
+    if (seg_right{k_l}(c_right,r_right)~=0)
+       index_match_l(k_l)=1;
+    end
+        
+end
+index_match1_l=find(index_match_l);
+
+    if (length(index_match1_l<2))
+    final_match_l(i,:)=[i,find(index_match_l==1)];            % finding corresponding segmenty to 'i'
+    
+    end
+
+     if (max(index_match_l)==1)
+    m_l=length(d_seg1_l);
+    else
+   m_l=m_l+1;
+     end
+
+
+end
+
+        end
+end
+
+
+
+%% finding right segments in the left image with disparities 
+
+
+for i_right=1:length(seg_right)   % traversing all left segments
+   
+[r_seg_r, c_seg_r]=find(seg_right{i_right}) ;    % finding the coordinates of all the nonzero points in various segments
+d_seg_r=[c_seg_r r_seg_r];
+[q_r,index_disp_seg_r]=ismember(d_seg_r,d_right,'rows');     % searching the disparity1 points present in the 'i'th segment 
+      
+
+        if (max(q_r)~=0)                                                              % proceed further if there exist any disparity1 point
+                    valid_points_r=find(index_disp_seg_r>0);            
+                    d_seg1_r=d_seg_r(valid_points_r,:);         
+                    length_dseg1_r=length(d_seg1_r) ;                                %obtaining the disparity1 points present in the segment                 
+m_r=1;
+while( m_r<(length(d_seg1_r)) )
+                                            % traversing whole disparity1 points present in the segment for obtaining correspondence
+    
+                [ q1_r,index_left_r]=ismember(d_right,d_seg1_r(m_r,:),'rows');   % finding each diaprity point in the completet image disparity1 points 
+                 valid_points_right=find(index_left_r>0);
+                    
+                r_left=d_right(valid_points_right,1)+disp(valid_points_right);
+                c_left=d_right(valid_points_right,2);                           % obtaining their correspondence in the right image
+                d_left1=[r_left,c_left];
+                index_match_r=zeros(length(seg_left),1);
+
+for k_r=1:length(seg_left)
+    if (seg_left{k_r}(c_left,r_left)~=0)
+       index_match_r(k_r)=1;
+    end
+        
+end
+index_match1_r=find(index_match_r);
+
+    if (length(index_match1_r<2))
+    final_match_r(i_right,:)=[find(index_match_r==1),i_right];            % finding corresponding segmenty to 'i'
+    end
+
+ if (max(index_match_r)==1)
+    m_r=length(d_seg1_r);
+ else
+    m_r=m_r+1;
+ end
+
+
+end
+
+        end
+end
+
+[r_final_l,c_final_l]=size(final_match_l);
+
+for n=1:(r_final_l)    
+    final_match(n,:)=final_match_l(n,:);
+end
+
+[r_final_r,c_final_r]=size(final_match_r);
+
+for n1=1:r_final_r
+    final_match(length(final_match_l)+n1,:)=final_match_r(n1,:);    
+end
+
+final_match1=(find(final_match(:,1)>0));
+for i=1:length(final_match1)
+    final_match_f(i,:)=final_match(final_match1(i),:);
+end
+
+final_match=final_match_f;
+n3=1;
+while(n3<=length(final_match))
+    [q_match,index_q]=ismember(final_match,final_match(n3,:),'rows');
+    repeat=find(index_q);
+    if length(repeat)>1
+       final_match(repeat(2,1),:)=[ ];
+    end
+    n3=n3+1;
+end
+
+final_match1=final_match;
+n4=1;
+record=0;
+seg_comb=cell(length(final_match),2);
+
+for a=1:length(final_match)
+    seg_comb{a,1}= seg_left{final_match(a,1)};
+    seg_comb{a,2}=seg_right{final_match(a,2)};
+end    
+    
+seg=cell(length(final_match),2);
+
+
+
+%%%%%   combining redundant  right segments into one %%%%
+
+
+
+while (n4<=length(final_match))
+   
+    [q_rec,index_rec]=ismember(record,final_match(n4,1),'rows');
+    s_record=find(q_rec);
+    
+    record(length(record)+1,1)=final_match(n4,1);
+    
+    if (isempty(s_record)==1)
+    record(length(record)+1,1)=final_match(n4,1);
+  
+    clear qw;
+    [q_final, index_final] =ismember(final_match(:,1),final_match(n4,1));
+     s=find(q_final(:,1));
+  qw = zeros(row_img,col_img);
+  for j=1:length(s)
+  qw=seg_comb{s(j),2}+qw;
+  end
+  
+  seg{n4,1}=seg_comb{n4,1};
+  seg{n4,2}=qw;
+    end
+  n4=n4+1;
+ 
+end
+ 
+
+%%%%%   combining redundant left segments into one %%%%
+
+ n5=1;
+ seg_r=cell(100,2);
+ record_r=0;
+ seg1=seg;
+
+while (n5<=length(final_match))
+    
+  [q_rec,index_rec]=ismember(record_r,final_match(n5,2),'rows');
+  s_record_r=find(q_rec);
+  record_r(length(record_r)+1,1)=final_match(n5,2);
+  
+    if (isempty(s_record_r)==1)
+  clear qw;
+  [q_final, index_final] =ismember(final_match(:,2),final_match(n5,2));
+   s=find(q_final(:,1));
+   qw = zeros(row_img,col_img);
+      
+  for j=1:length(s)
+  qw=seg_comb{s(j),1}+qw;
+  
+  end
+sd=cellfun(@isempty,seg);
+
+    if(sd(n5,2)==0)
+    seg{n5,1}=qw;
+    end
+
+    else
+
+  seg{n5,1}=[ ];
+  seg{n5,2}=[ ] ;
+
+    end
+         n5=n5+1;
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ sd1=(~cellfun(@isempty,seg));
+ sd1=double(sd1);
+ [r_sd1,c_sd1]=find(sd1(:,1));
+l1=1;
+seg_new=cell(length(r_sd1),2);
+while(l1<=length(r_sd1))
+    seg_new{l1,1}=seg{r_sd1(l1),1};
+     seg_new{l1,2}=seg{r_sd1(l1),2};
+    l1=l1+1;
+end
+
+ mo_seg=cell(length(seg_new),2);
+ [r_seg,c_seg]=size(seg_new);
+ 
+ for qq=1:r_seg
+
+     mo_seg{qq,1}=seg_new{(qq),1};  %just copying content from seg_new cell to mo_seg cell.     
+     mo_seg{qq,2}=seg_new{(qq),2};
+     
+ end
+ 
+
+ wwm=cell(length(mo_seg),1);     
+ 
+  
+ %%% finding left segments with no disparity points%%%%%%
+ 
+ armo=zeros(length(mo_seg),1);
+for g=1:length(mo_seg)
+[L,num] = bwlabel(mo_seg{g,1});  
+    armo(g) = bwarea(L);      
+end
+
+arsg=zeros(length(seg_left),1);
+for d=1:length(seg_left)
+ [L,num] = bwlabel(seg_left{d});  
+    arsg(d) = bwarea(L);      
+end
+
+matched_left=zeros(length(seg_left),1);
+for g=1:length(mo_seg)
+    for d=1:length(seg_left)
+     if(armo(g)==arsg(d))
+       matched_left(d)=d;
+     end
+    end
+end
+ 
+%%%********* unmatched right segments**********%%%%%%
+
+armo=zeros(length(mo_seg),2);
+for g=1:length(mo_seg)
+[L,num] = bwlabel(mo_seg{g,2});  
+    armo(g) = bwarea(L);      
+end
+
+arsg=zeros(length(seg_right));
+for d=1:length(seg_right)
+ [L,num] = bwlabel(seg_right{d});  
+  arsg(d) = bwarea(L);      
+end
+
+matched_right=zeros(length(seg_right),1);
+for g=1:length(mo_seg)
+    for d=1:length(seg_right)
+     if(armo(g)==arsg(d))
+       matched_right(d)=d;
+     end
+    end
+end
+
+%%%%**********DENSE MATCHING AMONG SEGMENTS along epipolar line *****%%%
+
+unmatched_left=find(matched_left==0);
+unmatched_right=find(matched_right==0);
+match=cell(length(unmatched_left),2);
+for i=1:length(unmatched_left)
+    
+[r_un_lt,c_un_lt] = find(seg_left{unmatched_left(i)});
+d_un_lt=[r_un_lt c_un_lt];
+    match{i,1}=unmatched_left(i);
+    o=1;
+for j=1:length(unmatched_right)
+[r_un_rt,c_un_rt]=find(seg_right{unmatched_right(j)});
+[q_un,index_un] =  ismember(r_un_rt,r_un_lt(1,:));
+if (max(q_un)==1)
+    
+    rt_seg=find(q_un);
+    match{i,2}(o)=unmatched_right(j);
+    o=o+1;
+end
+end
+end
+
+matched_seg=cell(length(match),2);
+match1=match;
+
+for r=1:length(match)
+matched_seg{r,1}=seg_left{match{r,1}};
+
+for r1=1:length(match{r,2})
+  [lt, rt]=mycolorseg(left,right,matched_seg{r,1},seg_right{match{r,2}(r1)});
+  m1= my_m_by5(left,right,lt,rt);
+  if (max(max(m1))<max(max(M)))
+   disparity1(r1)=length(find(m1));
+  else
+   disparity1(r1)=0;
+  end
+end
+
+if (isempty(r1)==0)
+if (max(disparity1)~=0)
+disp=find(disparity1==max(disparity1));
+if (disp(1)<73)
+match1{r,2}=[ ];
+match1{r,2}=match{r,2}(disp(1));
+end
+else
+    match1{r,2}=[ ];
+end
+end
+clear disparity1;
+end
+
+emt_r=cellfun(@isempty,match1);
+y=1;
+for i=1:length(match1)
+    if (emt_r(i,2)==0)
+      
+    match2{y,1}=match1{i,1};
+    match2{y,2}=match1{i,2};
+    y=y+1;
+    end
+end
+
+
+
+%*************overall depth calculation*******************
+
+for p=1:length(mo_seg)
+       %mycolorseg function converts black and white segment into colour segment. i.e. adds original texture only on white portion of segment. 
+      [leftcolorseg,rightcolorseg]=mycolorseg(left,right,mo_seg{p,1},mo_seg{p,2});
+       m1= my_m_by5(left,right,leftcolorseg,rightcolorseg);      
+       bwseg=mo_seg{p,1};    
+
+ [Lm,nums] = bwlabel(bwseg);  %in case,where multiple segments are present.
+for seg_label=1:num        
+   
+      if (length(m1(m1>0))>4) %if number of feature points within the segment are more than 4,then only use 'tinterp'
+            [rm,cmnn]=find(m1>0);
+             emptym=0;
+              if(cmnn~=emptym)   
+             %opti_seginterp function performs interpolation using the disparity points over the segment area.     
+            wwm{p,seg_label} = opti_segtinterp (m1,bwseg,seg_label);    
+              end
+                                           
+      end
+      
+      if(length(m1(m1>0))>0&&length(m1(m1>0))<4) %if number of feature points are less than 4 then 'tinterp'is not possible as it works using delaunay traingulation. 
+          %opti_avgdisp assigns the average disparity value to the overall segment.
+          wwm{p,seg_label} = opti_avgdisp (m1,bwseg,seg_label);
+      end
+end     
+
+ end
+
+ finalcell=wwm(cellfun(@isempty,wwm)==0);             
+      
+if(min(emt_r(:,2))==0)
+    match3=cell2mat(match2);             
+    wwu=cell(length(match3));         
+    [r_length,c_length]=size(match3);     
+
+  for p=1:r_length
+        
+      [leftcolorseg,rightcolorseg]=mycolorseg(left,right,seg_left{match3(p,1)},seg_right{match3(p,2)});
+  
+      m1= my_m_by5(left,right,leftcolorseg,rightcolorseg);
+      bwseg=seg_left{match3(p,1)};    
+      [Lm,nums] = bwlabel(bwseg);                %in case,where multiple segments are present.
+  for seg_label=1:num      
+      if (length(m1(m1>0))>4)
+         [rm,cmnn]=find(m1>0);
+           emptym=0;
+            if(cmnn~=emptym)   
+                wwu{p} = opti_segtinterp (m1,bwseg,seg_label);    
+            end;
+      end
+                
+           if(length(m1(m1>0))>0&&length(m1(m1>0))<4)
+                  wwu{p} = opti_avgdisp (m1,bwseg,seg_label);
+           end
+           
+  end         
+  end
+  
+ %combining segments into one image. 
+  
+ out_image=zeros(row_img, col_img);
+ finalcellu=wwu(cellfun(@isempty,wwu)==0);
+  for oiu=1:length(finalcellu)
+  out_image=finalcellu{oiu}+out_image;
+ end
+end
+       
+if(min(emt_r(:,2))==1)
+  out_image=zeros(row_img, col_img);
+end
+
+ for oiu=1:length(finalcell)
+   out_image=finalcell{oiu}+out_image;
+  
+ end
+
+ %normalizing the image for display purpose.
+ norm=floor(max(max(out_image)))+20;   
+    filld = opti_fill2( out_image,row_img,col_img );
+imshow(filld,'DisplayRange',[0 norm]);
+%  imwrite(uint8(4*out_image),'F:\Dropbox\Hemraj\matlab_files\final_code\waste.png');
+end
