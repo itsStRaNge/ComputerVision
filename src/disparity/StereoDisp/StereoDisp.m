@@ -37,8 +37,6 @@ function disp_map = StereoDisp(im_left, im_right, K, max_disp, win_size, disp_sc
 %      AUTHOR   : Subhayan Mukherjee (subhayan001@gmail.com)
 %      DATE     : Apr.2014
 %
-% Basic error checking
-if ~exist('im_left', 'var') || ~exist('im_right', 'var'), disp('Input stereo image pair not properly specified!'); end
 %
 % Default (random) input arguments
 if ~exist('K', 'var'), K = 10; end
@@ -47,8 +45,8 @@ if ~exist('win_size', 'var'), win_size = 9; end
 if ~exist('disp_scale', 'var'), disp_scale = floor(255/max_disp); end
 
 % Read original left and right images
-he_l = imread(im_left);
-he_r = imread(im_right);
+he_l = im_left;
+he_r = im_right;
 
 % Extract intensities (L) from original left and right images
 cform = makecform('srgb2lab');

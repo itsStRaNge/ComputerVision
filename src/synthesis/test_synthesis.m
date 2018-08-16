@@ -1,9 +1,10 @@
 function test_synthesis()
 %% load data
-leftrgb=imread('data/hatsL.png');
-rightrgb=imread('data/hatsR.png');
-load('data/disp_hats.mat', 'disp_map');
-v=VideoWriter('data/output_test_seq.avi');
+leftrgb=imread('data/bikeL.png');
+rightrgb=imread('data/bikeR.png');
+load('data/disp_bike.mat');
+
+v=VideoWriter('test_sequence.avi');
 open(v);
 
 %% apply synthesis for different p

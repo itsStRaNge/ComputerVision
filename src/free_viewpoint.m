@@ -27,8 +27,9 @@ E = eight_point_algorithm(Corr, K);
 
 %% depth map 
 % TODO: evt zweite disparity map für rechtes bild berechnen
-% input rectified images, punktkorrespondenzen
-% output depth map
+% TODO: disparity map fct umschreiben, sodass korrespondenzpunkte
+% übergeweben werden können
+disparity_map = calculateDisparityMap(JL,JR,'block',800);
 
 %% synthese
 % NOTE: alle verabeitungsschritte vorher nur einmal auszuführen
