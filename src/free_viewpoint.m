@@ -14,7 +14,7 @@ IL=lensdistort(IL,params.RadialDistortion,params.PrincipalPoint,'bordertype','fi
 IR=lensdistort(IR,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');
 
 %% feature matching
-Corr = feature_extracting_matching(I1,I2,true);
+Corr = feature_extracting_matching(I1,I2,false);
 
 % get essential matrix
 E = eight_point_algorithm(Corr, K);
