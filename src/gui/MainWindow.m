@@ -1,25 +1,4 @@
 function varargout = MainWindow(varargin)
-% MAINWINDOW MATLAB code for MainWindow.fig
-%      MAINWINDOW, by itself, creates a new MAINWINDOW or raises the existing
-%      singleton*.
-%
-%      H = MAINWINDOW returns the handle to a new MAINWINDOW or the handle to
-%      the existing singleton*.
-%
-%      MAINWINDOW('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in MAINWINDOW.M with the given input arguments.
-%
-%      MAINWINDOW('Property','Value',...) creates a new MAINWINDOW or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before MainWindow_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to MainWindow_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
-
 % Edit the above text to modify the response to help MainWindow
 
 % Last Modified by GUIDE v2.5 16-Aug-2018 11:06:30
@@ -44,46 +23,11 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before MainWindow is made visible.
-function MainWindow_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to MainWindow (see VARARGIN)
-
-% Choose default command line output for MainWindow
-handles.output = hObject;
-
-% Update handles structure
-guidata(hObject, handles);
-
-% UIWAIT makes MainWindow wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-axes(handles.leftImage);
-imshow(['','L1.JPG']);
-axes(handles.rightImage);
-imshow(['','R1.JPG']);
-
-% --- Outputs from this function are returned to the command line.
-function varargout = MainWindow_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get default command line output from handles structure
-varargout{1} = handles.output;
-
-
-% --- Executes on slider movement.
+%% callback functions
 function pSlider_Callback(hObject, eventdata, handles)
 % hObject    handle to pSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 number = get(handles.pSlider,'Value'); 
 
 if isempty(number)
@@ -97,20 +41,6 @@ elseif number > 1
 end
 set(handles.pValue, 'String', num2str(number));
 
-
-% --- Executes during object creation, after setting all properties.
-function pSlider_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to pSlider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-
-% --- Executes on button press in loadLeftImageButton.
 function loadLeftImageButton_Callback(hObject, eventdata, handles)
 % hObject    handle to loadLeftImageButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -120,7 +50,6 @@ axes(handles.leftImage);
 imshow([Path_Name,File_Name]);
 
 
-% --- Executes on button press in loadRightImageButton.
 function loadRightImageButton_Callback(hObject, eventdata, handles)
 % hObject    handle to loadRightImageButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -130,13 +59,14 @@ axes(handles.rightImage);
 imshow([Path_Name,File_Name]);
 
 
-% --- Executes on button press in runButton.
 function runButton_Callback(hObject, eventdata, handles)
 % hObject    handle to runButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 p = get(handles.pSlider, 'Value');
+
 outputImage = imread('L1.JPG'); % dummy_fct(p);
+
 axes(handles.outputImage);
 imshow(outputImage);
 title_str = strcat('P = ', num2str(p));
@@ -147,9 +77,6 @@ function pValue_Callback(hObject, eventdata, handles)
 % hObject    handle to pValue (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of pValue as text
-%        str2double(get(hObject,'String')) returns contents of pValue as a double
 str=get(hObject,'String');
 number = str2double(str);
 
@@ -165,14 +92,37 @@ end
 set(handles.pSlider, 'Value', number);
 
 
-% --- Executes during object creation, after setting all properties.
-function pValue_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to pValue (see GCBO)
+%% object created fcts
+function MainWindow_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to MainWindow (see VARARGIN)
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
+% Choose default command line output for MainWindow
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% load default images
+axes(handles.leftImage);
+imshow(['','L1.JPG']);
+axes(handles.rightImage);
+imshow(['','R1.JPG']);
+
+function varargout = MainWindow_OutputFcn(hObject, eventdata, handles) 
+varargout{1} = handles.output;
+
+
+function pSlider_CreateFcn(hObject, eventdata, handles)
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+function pValue_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
