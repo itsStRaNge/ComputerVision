@@ -4,6 +4,9 @@ IL = rgb2gray(imread('L1.JPG'));
 IR = rgb2gray(imread('R1.JPG'));
 load('camera_param', 'params');
 K = params.IntrinsicMatrix';
+IL=lensdistort(IL,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');
+IR=lensdistort(IR,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');
+
 
 %% get essential matrix
 imagePoints1 = detectSURFFeatures(IL);
@@ -20,7 +23,7 @@ matchedPoints2 = imagePoints2(indexPairs(:,2));
 
 
 %% get rectified images
-[JL, JR] = rectification(IL, IR, R, T, K,'svd');
+[JL, JR] = rectification(IL, IR, R, T, K,'kit');
 
 
 %% plot original and rectified images
