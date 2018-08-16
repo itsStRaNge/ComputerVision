@@ -1,12 +1,9 @@
 function test_rectification()
 %% load data
-IL = rgb2gray(imread('L1.JPG'));
-IR = rgb2gray(imread('R1.JPG'));
-load('camera_param', 'params');
+IL = rgb2gray(imread('data/L1.JPG'));
+IR = rgb2gray(imread('data/R1.JPG'));
+load('data/camera_param', 'params');
 K = params.IntrinsicMatrix';
-IL=lensdistort(IL,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');
-IR=lensdistort(IR,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');
-
 
 %% get essential matrix
 imagePoints1 = detectSURFFeatures(IL);
@@ -23,16 +20,23 @@ matchedPoints2 = imagePoints2(indexPairs(:,2));
 
 
 %% get rectified images
-[JL, JR] = rectification(IL, IR, R, T, K,'kit');
+[JL, JR, ~, ~] = rectification(IL, IR, R, T, K,'kit');
 
 
 %% plot original and rectified images
 subplot(2,2,1);
 imshow(IL);
+title('Original Left Image');
+
 subplot(2,2,2);
 imshow(IR);
+title('Original Right Image');
+
 subplot(2,2,3);
 imshow(JL);
+title('Rectified Left Image');
+
 subplot(2,2,4);
 imshow(JR);
+title('Rectified Right Image');
 end

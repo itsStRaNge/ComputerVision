@@ -1,12 +1,16 @@
 function test_synthesis()
-leftrgb=imread('hatsL.png');
-rightrgb=imread('hatsR.png');
-load disp_hats.mat disp_map;
-
-v=VideoWriter('test_sequence.avi');
+%% load data
+leftrgb=imread('data/hatsL.png');
+rightrgb=imread('data/hatsR.png');
+load('data/disp_hats.mat', 'disp_map');
+v=VideoWriter('data/output_test_seq.avi');
 open(v);
+
+%% apply synthesis for different p
 for p=0:0.02:1
-    writeVideo(v,synthesis(disp_map,leftrgb,rightrgb,p));
+    % apply synthesis for one p
+    outputImage = synthesis(disp_map,leftrgb,rightrgb,p);
+    writeVideo(v,outputImage);
 end
 close(v);
 end

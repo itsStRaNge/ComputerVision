@@ -1,19 +1,9 @@
-function [IL, IR] = cv_inv_rectify(JL, HL, JR, HR)
-% Derectification for two Images
-IL = zeros(size(JL));
-IR = zeros(size(JR));
-
-HL = inv(HL);
-HR = inv(HR);
+function [OutIm] = cv_inv_rectify(InIm, Homography)
+Homography = inv(Homography);
 % find the smallest bb containining both images
-bb = mcbb(size(JL),size(JR), HL, HR);
-
+bb = mcbb(size(InIm),size(InIm), Homography, Homography);
 
 % Warp LEFT
-[IL,~,~] = my_imwarp(JL, HL, 'bilinear', bb);
-
-% Warp RIGHT
-[IR,~,~] = my_imwarp(JR, HR, 'bilinear', bb);
-
+[OutIm,~,~] = my_imwarp(InIm, Homography, 'bilinear', bb);
 end
 

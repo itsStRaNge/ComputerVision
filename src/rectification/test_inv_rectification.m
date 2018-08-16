@@ -1,8 +1,8 @@
 function test_inv_rectification()
 %% load data
-IL = rgb2gray(imread('L1.JPG'));
-IR = rgb2gray(imread('R1.JPG'));
-load('camera_param', 'params');
+IL = rgb2gray(imread('data/L1.JPG'));
+IR = rgb2gray(imread('data/R1.JPG'));
+load('data/camera_param', 'params');
 K = params.IntrinsicMatrix';
 
 %% get essential matrix
@@ -23,15 +23,24 @@ matchedPoints2 = imagePoints2(indexPairs(:,2));
 [JL, JR, HL, HR] = rectification(IL, IR, R, T, K,'kit');
 
 %% inverse rectification
-[IL1, IR1] = cv_inv_rectify(JL, HL, JR, HR);
+IL1 = cv_inv_rectify(JL, HL);
+IR1 = cv_inv_rectify(JR, HR);
 
 %% plot original and rectified images
 subplot(2,2,1);
 imshow(IL);
+title('Original Left Image');
+
 subplot(2,2,2);
 imshow(IR);
+title('Original Right Image');
+
 subplot(2,2,3);
 imshow(IL1);
+title('Derectified Left Image');
+
 subplot(2,2,4);
 imshow(IR1);
+title('Derectified Right Image');
+
 end
