@@ -1,4 +1,6 @@
-function RTl = motion_estimation(correspondences, E, K)
+function [R, T] = motion_estimation(correspondences, E, K)
+    %% code from computer vision homework
+
     %% Preprocessing
     N = size(correspondences,2);
     x1_ = [correspondences(1:2,:); ones(1,N)];
@@ -37,7 +39,7 @@ function RTl = motion_estimation(correspondences, E, K)
     M2 = M1;
     R = 0;
     T = 0;
-    lambda = 0;
+    % lambda = 0;
     
     for j=1:4      
         for i=1:N
@@ -70,12 +72,8 @@ function RTl = motion_estimation(correspondences, E, K)
         if(nnz(d1)==0 && nnz(d2)==0)
             R = R_cell{j};
             T = T_cell{j};
-            lambda = d_cell{j};
+            % lambda = d_cell{j};
             break;
         end  
     end
-
-    RTl.R = R;
-    RTl.T = T;
-    RTl.lambda = lambda;
 end

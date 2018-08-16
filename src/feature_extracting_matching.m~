@@ -1,5 +1,6 @@
-function features = surf_extracting_matching(I1, I2, do_plot)
+function features = feature_extracting_matching(I1, I2, do_plot)
     % features = {points1, points2, correspondences}
+    % SURF approach
 
     % Get the Key Points
     Options.upright=true;
@@ -7,9 +8,6 @@ function features = surf_extracting_matching(I1, I2, do_plot)
     Ipts1=OpenSurf(I1,Options);
     Ipts2=OpenSurf(I2,Options);
     
-    features.points1 = [Ipts1.x; Ipts1.y];
-    features.points2 = [Ipts2.x; Ipts2.y];
-
     % Put the landmark descriptors in a matrix
     D1 = reshape([Ipts1.descriptor],64,[]); 
     D2 = reshape([Ipts2.descriptor],64,[]); 
@@ -38,8 +36,7 @@ function features = surf_extracting_matching(I1, I2, do_plot)
                         Ipts1(cor1).y;
                         Ipts2(cor2).x;
                         Ipts2(cor2).y ];
-    features.correspondences = correspondences;
-
+                    
     % Visualize correspondences
     if do_plot
         visualize_correspondences(I1,I2,correspondences,300);
@@ -47,7 +44,7 @@ function features = surf_extracting_matching(I1, I2, do_plot)
     
     % Extract robust correspondences  
     correspondences = ransac_algorithm(correspondences(:,1:400), 'epsilon', 0.75, 'tolerance', 0.08);
-    features.robust_correspondences = correspondences;
+    Corr = correspondences;
 
     % Visualize robust correspondences
     if do_plot

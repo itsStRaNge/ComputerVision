@@ -1,4 +1,6 @@
-function EF = eight_point_algorithm(correspondences, K)    
+function EF = eight_point_algorithm(correspondences, K)  
+    %% code from computer vision homework
+    
     % Convert to homogen coordinates
     onesRow = ones(1,size(correspondences,2));
     x1 = [correspondences(1:2,:); onesRow];

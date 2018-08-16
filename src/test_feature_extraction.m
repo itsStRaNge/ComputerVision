@@ -1,18 +1,17 @@
-close all;
-% Example 2, Corresponding points
-% Load images
-%I1=imread('TestImages/lena1.png');
-%I2=imread('TestImages/lena2.png');
-I1=imread('TestImages/L1.JPG');
-I2=imread('TestImages/R1.JPG');
+function test_feature_extraction()
+%% Load images
+I1=imread('data/L1.JPG');
+I2=imread('data/R1.JPG');
 
-m = feature_extracting_matching(I1,I2,true);
+%% do feature extraction
+Curr = feature_extracting_matching(I1,I2,true);
 
-K = calibration_1;
-E = eight_point_algorithm(m.robust_correspondences, K);
-rtl = motion_estimation(m.robust_correspondences, E, K);
+%% get essential matrix
+E = eight_point_algorithm(Curr, K);
 
-return;
+%% compute eukledian motion
+[R, T] = motion_estimation(Curr, E, K);
+end
 
 
 
