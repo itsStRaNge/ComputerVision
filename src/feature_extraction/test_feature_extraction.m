@@ -4,13 +4,13 @@ I1=imread('data/L1.JPG');
 I2=imread('data/R1.JPG');
 
 %% do feature extraction
-Curr = feature_extracting_matching(I1,I2,true);
+Corr = feature_extracting_matching(I1,I2,true);
 
 %% get essential matrix
-E = eight_point_algorithm(Curr, K);
+E = eight_point_algorithm(Corr, K);
 
 %% compute eukledian motion
-[R, T] = motion_estimation(Curr, E, K);
+[R, T] = motion_estimation(Corr, E, K);
 end
 
 

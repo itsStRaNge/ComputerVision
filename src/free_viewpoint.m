@@ -14,9 +14,13 @@ IL=lensdistort(IL,params.RadialDistortion,params.PrincipalPoint,'bordertype','fi
 IR=lensdistort(IR,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');
 
 %% feature matching
-% Output: 
-% E, R, T
-% List of corresponding features
+Corr = feature_extracting_matching(I1,I2,true);
+
+% get essential matrix
+E = eight_point_algorithm(Corr, K);
+
+% compute eukledian motion
+[R, T] = motion_estimation(Corr, E, K);
 
 %% rectificate images (crop or not)
 [JL, JR, HomographyL, HomographyR] = rectification(IL, IR, R, T, K,'kit');
