@@ -4,6 +4,7 @@ IL=imread('data/L1.JPG');
 IR=imread('data/R1.JPG');
 load('data/camera_param.mat', 'params');
 K = params.IntrinsicMatrix;
+
 %% do feature extraction
 Corr = feature_extracting_matching(IL,IR,true);
 

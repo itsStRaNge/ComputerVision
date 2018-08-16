@@ -32,12 +32,11 @@ end
 
 function preprocessButton_Callback(hObject, eventdata, handles)
 % do preprocessing
-[disparity_map, homography] = preprocessing(handles.IL, handles.IR, handles.K);
-handles.disparity_map = disparity_map;
-handles.homography = homography;
+disparity_map = preprocessing(handles.IL, handles.IR, handles.K);
 
 % save disparity map
-guidata(hObject,handles);
+handles.disparity_map;
+guidata(hObject,handles)
 
 
 function runButton_Callback(hObject, eventdata, handles)
@@ -57,8 +56,7 @@ function cameraCallibrationButton_Callback(hObject, eventdata, handles)
 load(strcat(Path_Name, File_Name), 'camera_param');
 
 % save data
-handles.K = camera_param;
-guidata(hObject,handles);
+setappdata(hObject.MainWindow, 'K', camera_param);
 
 % update textbox
 set(handles.cameraCallibrationText, 'String', File_Name);
@@ -79,7 +77,7 @@ set(handles.pValue, 'String', num2str(number));
 
 function loadLeftImageButton_Callback(hObject, eventdata, handles)
 %load image
-[File_Name, Path_Name] = uigetfile('leftimage.JPG');
+[File_Name, Path_Name] = uigetfile('leftimage');
 axes(handles.leftImage);
 IL = imread([Path_Name,File_Name]);
 
@@ -92,7 +90,7 @@ imshow(handles.IL);
 
 function loadRightImageButton_Callback(hObject, eventdata, handles)
 %load image
-[File_Name, Path_Name] = uigetfile('rightimage.JPG');
+[File_Name, Path_Name] = uigetfile('rightimage');
 axes(handles.rightImage);
 IR = imread([Path_Name,File_Name]);
 
@@ -128,22 +126,23 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % load default images
-handles.IL = imread('L1.JPG');
-handles.IR = imread('R1.JPG');
+IL = imread('L1.JPG');
+IR = imread('R1.JPG');
+
+% save images
+setappdata(hObject.MainWindow, 'IL', IL);
+setappdata(hObject.MainWindow, 'IR', IR);
 
 % display images
 axes(handles.leftImage);
-imshow(handles.IL);
+imshow(IL);
 axes(handles.rightImage);
-imshow(handles.IR);
+imshow(IR);
 
 % load default camera params
 load('camera_param_1.mat', 'camera_param');
-handles.K = camera_param;
+setappdata(hObject.figure1, 'K', camera_param);
 set(handles.cameraCallibrationText, 'String', 'camera_param_1.mat');
-
-% save data
-guidata(hObject,handles);
 
 function varargout = MainWindow_OutputFcn(hObject, eventdata, handles) 
 varargout{1} = handles.output;
