@@ -12,6 +12,6 @@ Corr = feature_extracting_matching(IL,IR,true);
 E = eight_point_algorithm(Corr, K);
 
 %% compute eukledian motion
-[R, T] = motion_estimation(Corr, E, K);
+[R, T] = motion_estimation(Corr, E, K)
 end
  

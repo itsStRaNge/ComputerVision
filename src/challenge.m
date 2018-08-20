@@ -10,14 +10,14 @@ members = {'Alexander Lechthaler', 'Patrick von Velasco', 'Lukas Bernhard'};
 mail = {'alexander.lechthaler@tum.de', 'ga38kon@mytum.de', 'l.bernhard@tum.de'};
 
 %% Load images and K
-IL = imread('L1.JPG');
-IR = imread('R1.JPG');
+IL = imread('L2.JPG');
+IR = imread('R2.JPG');
 
 %% count time
 tic;
 
 %% create new image
-output_image = free_viewpoint(IL, IR, p);
+output_image = free_viewpoint(IL, IR, 0.5);
 
 %% stop time
 elapsed_time = toc;

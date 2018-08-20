@@ -1,20 +1,21 @@
-function [output_image]  = free_viewpoint(IL, IR, varargin)
+function [output_image]  = free_viewpoint(IL, IR, p)
 %% parse inputs
-g = inputParser;
-validP = @(x) isnumeric(x);
-addOptional(g, "p", 0.5, validP);
-p = g.Results.p;
+%g = inputParser;
+%validP = @(x) isnumeric(x);
+%addOptional(g, "p", 0.5, validP);
+%parse(g, varargin);
+%p = g.Results.p;
 
 %% load camera params
-load('camera_param_1.mat', 'camera_param');
+load('camera_param_2.mat', 'camera_param');
 K = camera_param.IntrinsicMatrix;
 
 %% undistortion lens from images
-IL=lensdistort(IL,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');
-IR=lensdistort(IR,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');
+IL=lensdistort(IL,camera_param.RadialDistortion,camera_param.PrincipalPoint,'bordertype','fit');
+IR=lensdistort(IR,camera_param.RadialDistortion,camera_param.PrincipalPoint,'bordertype','fit');
 
 %% feature matching
-Corr = feature_extracting_matching(I1,I2,false);
+Corr = feature_extracting_matching(IL,IR,false);
 
 % get essential matrix
 E = eight_point_algorithm(Corr, K);
