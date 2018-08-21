@@ -1,26 +1,13 @@
 function test_inv_rectification()
 %% load data
-IL = rgb2gray(imread('data/L1.JPG'));
-IR = rgb2gray(imread('data/R1.JPG'));
-load('data/camera_param', 'params');
-K = params.IntrinsicMatrix';
-
-%% get essential matrix
-imagePoints1 = detectSURFFeatures(IL);
-imagePoints2 = detectSURFFeatures(IR);
-features1 = extractFeatures(IL,imagePoints1,'Upright',true);
-features2 = extractFeatures(IR,imagePoints2,'Upright',true);
-indexPairs = matchFeatures(features1,features2);
-matchedPoints1 = imagePoints1(indexPairs(:,1));
-matchedPoints2 = imagePoints2(indexPairs(:,2));
-[E,~] = estimateEssentialMatrix(matchedPoints1,matchedPoints2,params);
-
-%% get rotation and translation
-[R,T] = relativeCameraPose(E,params,matchedPoints1,matchedPoints2);
-
+IL = rgb2gray(imread('L1.JPG'));
+IR = rgb2gray(imread('R1.JPG'));
+load('camera_param', 'params');
+load('r_t', 'R');
+load('r_t', 'T');
 
 %% get rectified images
-[JL, JR, HL, HR] = rectification(IL, IR, R, T, K,'kit');
+[JL, JR, HL, HR] = rectification(IL, IR, R, T', params.IntrinsicMatrix','kit');
 
 %% inverse rectification
 IL1 = cv_inv_rectify(JL, HL);

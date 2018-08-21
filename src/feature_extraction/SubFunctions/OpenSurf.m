@@ -62,7 +62,7 @@ function ipts=OpenSurf(img,Options)
 functionname='OpenSurf.m';
 functiondir=which(functionname);
 functiondir=functiondir(1:end-length(functionname));
-addpath([functiondir '/SubFunctions'])
+% addpath([functiondir '/SubFunctions'])
        
 % Process inputs
 defaultoptions=struct('tresh',0.0002,'octaves',5,'init_sample',2,'upright',false,'extended',false,'verbose',false);

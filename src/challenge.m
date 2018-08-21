@@ -17,7 +17,7 @@ IR = imread('R1.JPG');
 tic;
 
 %% create new image
-output_image = free_viewpoint(IL, IR, p);
+output_image = free_viewpoint(IL, IR);
 
 %% stop time
 elapsed_time = toc;

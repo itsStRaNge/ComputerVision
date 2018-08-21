@@ -1,3 +1,4 @@
-IL=imread('officeL.png');
-IR=imread('officeR.png');
-dispMap=calculateDisparityMap(IL,IR,'block',800);
+load('rectificated.mat', 'JL');
+load('rectificated.mat', 'JR');
+
+dispMap=calculateDisparityMap(JL,JR,'block',800);

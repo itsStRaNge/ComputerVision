@@ -8,7 +8,6 @@ function [dispmap_left,IL_resized,IR_resized] = calculateDisparityMap(IL,IR,mode
         error('images must be the same size');
     end
     if(max(size(IL))>max_image_size)
-        disp('resizing images');
         size_factor=max_image_size/max(size(IL));
         IL_resized=imresize(IL,size_factor);
         IR_resized=imresize(IR,size_factor);

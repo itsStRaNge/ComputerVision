@@ -17,10 +17,14 @@ function im_synth = synthesis(disp_map,leftrgb,rightrgb,p)
     %fill in foreground with moved pixels from first image
     for i=1:size(leftrgb,1)
         for j=1:size(leftrgb,2)
+            if j > 255
+                disp('stop');
+            end
             new_x=round(j-disp_map(i,j)*p);
             if(new_x>0 && new_x < size(leftrgb,2))
                 im_synth(i,new_x,:)=leftrgb(i,j,:);
-                im_synth(i,new_x:j,:)=reshape(repelem(squeeze(im_synth(i,new_x,:)),(j-new_x+1)),size(im_synth(i,new_x:j,:)));     
+                zz = repelem(squeeze(im_synth(i,new_x,:)),(j-new_x+1));
+                im_synth(i,new_x:j,:)=reshape(zz, size(im_synth(i,new_x:j,:)));     
             end
         end
     end
