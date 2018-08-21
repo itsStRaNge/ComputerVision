@@ -24,4 +24,4 @@ elapsed_time = toc;
 
 %% Display Output
 disp(elapsed_time);
-imshow(finalImage);
+imshow(output_image);

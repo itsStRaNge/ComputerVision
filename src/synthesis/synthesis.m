@@ -1,5 +1,7 @@
 function im_synth = synthesis(disp_map,leftrgb,rightrgb,p)
-
+    leftrgb = im2uint16(leftrgb);
+    righrgb = im2uint16(rightrgb);
+    disp_map = im2uint16(disp_map);
     im_synth=zeros(size(leftrgb));
     %{
     %Fill in background with pixels from second image.
@@ -17,9 +19,6 @@ function im_synth = synthesis(disp_map,leftrgb,rightrgb,p)
     %fill in foreground with moved pixels from first image
     for i=1:size(leftrgb,1)
         for j=1:size(leftrgb,2)
-            if j > 255
-                disp('stop');
-            end
             new_x=round(j-disp_map(i,j)*p);
             if(new_x>0 && new_x < size(leftrgb,2))
                 im_synth(i,new_x,:)=leftrgb(i,j,:);

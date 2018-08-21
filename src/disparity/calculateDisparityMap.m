@@ -19,7 +19,5 @@ function [dispmap_left,IL_resized,IR_resized] = calculateDisparityMap(IL,IR,mode
     else
         error('mode not specified correctly');
     end
-    figure
-    imagesc(dispmap_left);
 end
 

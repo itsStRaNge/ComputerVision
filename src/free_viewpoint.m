@@ -1,4 +1,4 @@
-function [output_image]  = free_viewpoint(IL, IR, p)
+function [output_image]  = free_viewpoint(IL, IR, varargin)
 %% parse inputs
 g = inputParser;
 g.addOptional("p", 0.5, @isnumeric);
