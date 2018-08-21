@@ -20,8 +20,7 @@ tic;
 output_image = free_viewpoint(IL, IR);
 
 %% stop time
-elapsed_time = toc;
+fprintf('End \tTotal Time: \t\t%.2fs\n', toc);
 
 %% Display Output
-disp(elapsed_time);
 imshow(output_image);

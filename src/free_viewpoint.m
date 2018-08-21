@@ -6,49 +6,66 @@ g.parse(varargin{:});
 p = g.Results.p;
 
 %% load camera params
-disp('Load camera parameters');
+disp('Loading Camera Parameters');
 load('camera_param_1.mat', 'camera_param');
 K = camera_param.IntrinsicMatrix';
 
 %% undistortion lens from images
-%IL=lensdistort(IL,camera_param.RadialDistortion,camera_param.PrincipalPoint, ...
-   % 'bordertype','fit');
-%IR=lensdistort(IR,camera_param.RadialDistortion,camera_param.PrincipalPoint, ...
-    %'bordertype','fit');
+fprintf('1/8\t Undistorting Lens'); 
+start = tic;
+Z =lensdistort(IL,camera_param.RadialDistortion,camera_param.PrincipalPoint, ...
+    'bordertype','fit');
+U =lensdistort(IR,camera_param.RadialDistortion,camera_param.PrincipalPoint, ...
+    'bordertype','fit');
+fprintf(': \t\t%.2fs\n', toc(start));
 
 %% feature matching
-disp('extract features');
+fprintf('2/8\t Extracting Features'); 
+start = tic;
 Corr = feature_extracting_matching(IL,IR,false);
+fprintf(': \t\t%.2fs\n', toc(start));
 
 % get essential matrix
-disp('estimate essential matrix');
+fprintf('3/8\t Estimate Essential Matrix'); 
+start = tic;
 E = eight_point_algorithm(Corr, K);
+fprintf(': \t%.2fs\n', toc(start));
 
 % compute eukledian motion
-disp('compute eukledian motion');
+fprintf('4/8\t Computing Motion'); 
+start = tic;
 [R, T] = motion_estimation(Corr, E, K);
+fprintf(': \t\t%.2fs\n', toc(start));
 
 %% rectificate images (crop or not)
-disp('apply rectification');
+fprintf('5/8\t Apply Rectification');
+start = tic;
 [JL, JR, HomographyL, HomographyR] = rectification(IL, IR, R, T', K,'kit');
+fprintf(': \t\t%.2fs\n', toc(start));
 
 %% depth map 
 % TODO: evt zweite disparity map für rechtes bild berechnen
 % TODO: disparity map fct umschreiben, sodass korrespondenzpunkte
 % übergeweben werden können
-disp('compute disparity map');
+fprintf('6/8\t Creating Disparity Map');
+start = tic;
 [disparity_map,IL_resized,IR_resized] = calculateDisparityMap(JL,JR,'block',800);
+fprintf(': \t%.2fs\n', toc(start));
 
 %% synthese
 % NOTE: alle verabeitungsschritte vorher nur einmal auszuführen
 %       synthese wird bei jedem neuen p durchgeführt
 % TODO: holefilling nochmal anschaun
-disp('synthesis new image');
+fprintf('7/8\t Synthesising new Image');
+start = tic;
 IM = synthesis(disparity_map, IL_resized, IR_resized, p);
+fprintf(': \t%.2fs\n', toc(start));
 
 %% derectification
 % NOTE: not sure what homography matrix to choose
-disp('inverse rectification');
+fprintf('8/8\t Inverting Rectification');
+start = tic;
 output_image = cv_inv_rectify(IM, HomographyL);
+fprintf(': \t%.2fs\n', toc(start));
 end
 
