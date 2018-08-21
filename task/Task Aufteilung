@@ -5,6 +5,9 @@ Algorithmus
 1. Hausaufgaben durchlaufen lassen
 	[T, R, lambda, P1, camC1, camC2] = rekonstruktion()
 
+    TODO:
+    manchmal wird durch ransac r und t = 0 zurückgegeben
+
 2. rektifizierung
 	(http://zbs-ilmenau.de/intern/vip/3D-Daten/VIP_3D_Rektifizierung_Stereobilder.html)
 	
@@ -20,6 +23,9 @@ Algorithmus
 4. Image Deph Map Synthesizes
 	 p * disparity(x,y) = x3
 	neue position des pixels
+
+    TODO:
+    bekommen immer noch einen error
 
 (4.2 hole filling, interpolation)
 
