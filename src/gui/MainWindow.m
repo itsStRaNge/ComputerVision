@@ -1,7 +1,7 @@
 function varargout = MainWindow(varargin)
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 16-Aug-2018 15:02:19
+% Last Modified by GUIDE v2.5 26-Aug-2018 17:10:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -32,24 +32,28 @@ end
 
 function preprocessButton_Callback(hObject, eventdata, handles)
 % do preprocessing
-[disparity_map, homography] = preprocessing(handles.IL, handles.IR, handles.K);
+print_console(handles.console, 'Starting Preprocessing');
+[disparity_map, homography] = preprocessing(handles.IL, handles.IR, handles.K, handles.console);
 handles.disparity_map = disparity_map;
 handles.homography = homography;
 
 % save disparity map
 guidata(hObject,handles);
+print_console(handles.console, 'Finished Preprocessing');
 
 
 function runButton_Callback(hObject, eventdata, handles)
+print_console(handles.console, 'Creating New Image');
 p = get(handles.pSlider, 'Value');
 
 output_img = new_view(handles.disparity_map, handles.IL, handles.IR, ...
-                      get(handles.pSlider,'Value'));
+                      get(handles.pSlider,'Value'), handles.console);
 
 axes(handles.outputImage);
 imshow(output_img);
 title_str = strcat('P = ', num2str(p));
 title(handles.outputImage,title_str);
+print_console(handles.console, 'Finished');
 
 function cameraCallibrationButton_Callback(hObject, eventdata, handles)
 % load data
@@ -156,6 +160,29 @@ end
 
 
 function pValue_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function console_Callback(hObject, eventdata, handles)
+% hObject    handle to console (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of console as text
+%        str2double(get(hObject,'String')) returns contents of console as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function console_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to console (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
