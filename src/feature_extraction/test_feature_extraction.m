@@ -1,7 +1,7 @@
 function test_feature_extraction()
 %% Load images
-IL=imread('L1.JPG');
-IR=imread('R1.JPG');
+IL=imread('L2_undist.png');
+IR=imread('R2_undist.png');
 load('camera_param.mat', 'params');
 K = params.IntrinsicMatrix';
 

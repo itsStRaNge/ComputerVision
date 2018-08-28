@@ -9,24 +9,20 @@ defaultSize  = 800;
 expectedMode= {'block','feat'};
 
 p = inputParser;
-validSize = @(x) (isnumeric(x));
+validSize = @(x) isnumeric(x);
 
 validImage= @(x) ((isnumeric(x)) && (size(x,1)>1) && (size(x,2)>1) && (size(x,3)==3) && (strcmp(class(x),'uint8')));
 
 addRequired(p,'IL',validImage);
 addRequired(p,'IR',validImage);
-addParameter(p,'size',defaultSize,validSize);
-addParameter(p,'mode',defaultMode,@(X) any(validatestring(X,expectedMode)));
+addOptional(p,'size',defaultSize,validSize);
+addOptional(p,'mode',defaultMode,@(X) any(validateString(X,expectedMode)));
 
-parse(p,IL,IR,varargin{:});
-mode=p.Results.mode;
-max_image_size=p.Results.size;
+p.parse(IL);
 
 if(strcmp(mode,'feat'))
     if(size(varargin(end),1)==4 && size(varargin(end),2)>1 && size(varargin(end),3)==1)
         Corr=varargin(end);
-    else
-        error('please pass 4xN image correspondence vector as last argument');
     end
 end
 
