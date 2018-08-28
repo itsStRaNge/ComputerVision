@@ -9,7 +9,7 @@ load('e', 'E');
 load('corr', 'Corr');
 
 %% get rectified images
-[JL, JR, ~, ~] = rectification(IL, IR, R, T', params.IntrinsicMatrix','svd');
+%[JL, JR, ~, ~] = rectification(IL, IR, R, T', params.IntrinsicMatrix','kit');
 
 %% plot original and rectified images
 subplot(2,2,1);
