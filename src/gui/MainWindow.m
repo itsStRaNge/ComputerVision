@@ -72,12 +72,13 @@ number = get(handles.pSlider,'Value');
 
 if isempty(number)
     number = 0.5;
-    warndlg('Input must be numerical');
+    print_console(handles.console, 'Input must be numerical');
 elseif number < 0
     number = 0.0;
-    warndlg('Input must be greater than 0');
+    print_console(handles.console, 'Input must be >=0');
 elseif number > 1
     number = 1.0;
+    print_console(handles.console, 'Input must be <= 1');
 end
 set(handles.pValue, 'String', num2str(number));
 
@@ -113,14 +114,16 @@ number = str2double(str);
 
 if isempty(number)
     number = 0.5;
-    warndlg('Input must be numerical');
+    print_console(handles.console, 'Input must be numerical');
 elseif number < 0
     number = 0.0;
-    warndlg('Input must be greater than 0');
+    print_console(handles.console, 'Input must be >= 0');
 elseif number > 1
     number = 1.0;
+    print_console(handles.console, 'Input must be <= 1');
 end
 set(handles.pSlider, 'Value', number);
+set(hObject, 'String', num2str(number));
 
 
 %% object created fcts

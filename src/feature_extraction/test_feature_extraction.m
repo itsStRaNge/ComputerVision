@@ -1,12 +1,12 @@
 function test_feature_extraction()
 %% Load images
-IL=imread('L1.JPG');
-IR=imread('R1.JPG');
+load('lens_distr_l.mat', 'IL_d');
+load('lens_distr_r.mat', 'IR_d');
 load('camera_param.mat', 'params');
 K = params.IntrinsicMatrix';
 
 %% do feature extraction
-Corr = feature_extracting_matching(IL,IR,true);
+Corr = feature_extracting_matching(IL_d,IR_d,true);
 
 %% get essential matrix
 E = eight_point_algorithm(Corr, K);

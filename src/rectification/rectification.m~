@@ -6,10 +6,9 @@ pi_matrix = [1 0 0 0; 0 1 0 0; 0 0 1 0];
 
 [yaw, pitch, roll] = euler_angles(R); 
 R_half = euler_rotation(yaw/2, pitch/2, roll/2);
-%R_half = euler_rotation(0/2, 50/2, 4/2);
 
-M = [R, (T)'; 0, 0, 0, 1];
-PL = K * pi_matrix * eye(4,4);
+M = [R_half, (T/2)'; 0, 0, 0, 1];
+PL = K * pi_matrix * -M;
 PR = K * pi_matrix * M;
 
 %% get rectification mode

@@ -1,8 +1,8 @@
 function test_lensdistort()
 %% load data
-IL = rgb2gray(imread('data/L1.JPG'));
-IR = rgb2gray(imread('data/R1.JPG'));
-load('data/camera_param.mat', 'params');
+IL = rgb2gray(imread('L1.JPG'));
+IR = rgb2gray(imread('R1.JPG'));
+load('camera_param.mat', 'params');
 
 %% undistort images
 IL_d = lensdistort(IL,params.RadialDistortion,params.PrincipalPoint,'bordertype','fit');

@@ -92,7 +92,7 @@ bb = mcbb(size(IL),size(IR), TL, TR);
 for c = 1:3
 
     % Warp LEFT
-    [JL(:,:,c),bbL,alphaL] = my_imwarp(IL(:,:,c), TL, 'bilinear', bb);
+    [JL(:,:,c),bbL,alphaL] = myimwarp(IL(:,:,c), TL, 'bilinear', bb);
 
     % Warp RIGHT
     [JR(:,:,c),bbR,alphaR] = my_imwarp(IR(:,:,c), TR, 'bilinear', bb);

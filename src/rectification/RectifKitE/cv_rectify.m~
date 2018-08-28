@@ -20,7 +20,7 @@ dR = p(1:2) - px(1:2)./px(3) ;
 dL(2) = dR(2);
 
 %  rectification with centering
-[HL,HR,~,~] = rectify(PL,PR,dL,dR);
+%[HL,HR,~,~] = rectify(KL,KR,dL,dR);
 
 
 % find the smallest bb containining both images
@@ -30,7 +30,7 @@ bb = mcbb(size(IL),size(IR), HL, HR);
 for c = 1:size(IL, 3)
 
     % Warp LEFT
-    [JL(:,:,c),~,~] = my_imwarp(IL(:,:,c), HL, 'bilinear', bb);
+    [JL(:,:,c),~,~] = imwarp(IL(:,:,c), HL, 'bilinear', bb);
 
     % Warp RIGHT
     [JR(:,:,c),~,~] = my_imwarp(IR(:,:,c), -HR, 'bilinear', bb);

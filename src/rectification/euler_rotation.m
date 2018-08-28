@@ -17,8 +17,8 @@ function rotation = euler_rotation(yaw_deg, pitch_deg, roll_deg)
     r_y = eye(3);
     r_y(1,1) = cos_p;
     r_y(3,3) = cos_p;
-    r_y(1,3) = -sin_p;
-    r_y(3,1) = sin_p;
+    r_y(1,3) = sin_p;
+    r_y(3,1) = -sin_p;
 
     r_z = eye(3);
     r_z(1,1) = cos_y;
