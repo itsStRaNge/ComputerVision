@@ -1,4 +1,5 @@
 function [JL, JR, HL, HR] = du_rectification(IL, IR, Corr, plot)
+%% adjusted file from http://staffhome.ecm.uwa.edu.au/~00050673/Tutorials/rectification/
 xx1 = Corr(1:2,:)';
 xx2 = Corr(3:4,:)';
 
