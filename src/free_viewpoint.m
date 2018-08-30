@@ -2,13 +2,11 @@ function [output_image]  = free_viewpoint(IL, IR, camera_param, varargin)
 %% parse inputs
 g = inputParser; 
 g.addOptional("load_disparity_map", true, @islogical);
-g.addOptional("load_motion", true, @islogical);
 g.addOptional("p", 0.5, @isnumeric);
 g.addOptional("gui_console", 0);
 g.parse(varargin{:});
 p = g.Results.p;
 load_disparity = g.Results.load_disparity_map;
-load_motion = g.Results.load_motion;
 gui_console = g.Results.gui_console;
 
 K = camera_param.IntrinsicMatrix';
@@ -35,35 +33,37 @@ IR_d = undistort_image(IR,camera_param.FocalLength(1),camera_param.PrincipalPoin
 print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
 
-if load_motion
-    load('eukledian_motion', 'R');
-    load('eukledian_motion', 'T');
-else
-    %% feature matching
-    print_console(gui_console, '2/8\t Extracting Features\t\t 25.00s'); 
-    start = tic;
-    Corr = feature_extracting_matching(IL_d,IR_d,false);
-    print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
-    %% get essential matrix
-    print_console(gui_console, '3/8\t Estimate Essential Matrix\t 0.00s'); 
-    start = tic;
-    E = eight_point_algorithm(Corr, K);
-    print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
+%% feature extracting
+print_console(gui_console, '2/8\t Extracting SURF Features\t 15.00s'); 
+start = tic;
+feat = feature_extracting(IL_d,IR_d,false);
+print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
+%% feature matching
+print_console(gui_console, '2/8\t Feature Matching\t\t 15.00s'); 
+start = tic;
+matches = feature_matching(feat.P1, feat.D1, feat.P2, feat.D2);
+matches = ransac_algorithm(matches(:,1:200), 'epsilon', 0.75, 'tolerance', 0.1);
+print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
-    %% compute eukledian motion
-    print_console(gui_console, '4/8\t Computing Motion\t\t 0.10s'); 
-    start = tic;
-    [R, T] = motion_estimation(Corr, E, K);
-    print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
-end
+% %% get essential matrix
+% print_console(gui_console, '3/8\t Estimate Essential Matrix\t 0.00s'); 
+% start = tic;
+% E = eight_point_algorithm(matches, K);
+% print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
+% 
+% %% compute eukledian motion
+% print_console(gui_console, '4/8\t Computing Motion\t\t 0.10s'); 
+% start = tic;
+% [R, T, lambda] = motion_estimation(matches, E, K);
+% print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
 %% rectificate images (crop or not)
 print_console(gui_console, '5/8\t Apply Rectification\t\t 3.80s');
 start = tic;
 %[JL, JR, HomographyL, HomographyR] = cv_rectify(IL, IR, R, T', K,);
-[JL, JR, HomographyL, HomographyR] = du_rectification(IL, IR, Corr, false);
+[JL, JR, HomographyL, HomographyR] = du_rectification(IL, IR, matches, false);
 print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
 %% depth map 
