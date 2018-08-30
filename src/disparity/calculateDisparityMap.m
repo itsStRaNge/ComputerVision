@@ -22,6 +22,7 @@ parse(p,IL,IR,varargin{:});
 mode=p.Results.mode;
 max_image_size=p.Results.size;
 
+%{
 if(strcmp(mode,'feat'))
     if(size(varargin(end),1)==4 && size(varargin(end),2)>1 && size(varargin(end),3)==1)
         Corr=varargin(end);
@@ -29,6 +30,7 @@ if(strcmp(mode,'feat'))
         error('please pass 4xN image correspondence vector as last argument');
     end
 end
+%}
 
 
 
@@ -42,9 +44,10 @@ end
         IR_resized=imresize(IR,size_factor);
     end
     if(strcmp('feat',mode))
-        dispmap_left=disparity_segmentation(IL_resized,IR_resized,15);
+        dispmap_left=disparity_segmentation(IL_resized,IR_resized,25);
     elseif(strcmp('block',mode))
-        dispmap_left=StereoDisp(IL_resized,IR_resized,17,100,35,1);
+        dispmap_left=StereoDisp(IL_resized,IR_resized,40,60,11,1);
+        
     else
         error('mode not specified correctly');
     end

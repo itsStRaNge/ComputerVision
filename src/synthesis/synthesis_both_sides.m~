@@ -1,0 +1,53 @@
+function im_synth = synthesis_both_sides(disp_left,disp_right,leftrgb,rightrgb,p)
+    im_synth_l=zeros(size(leftrgb));
+    rowvls=1:size(leftrgb,2);
+    m=repmat(rowvls,size(leftrgb,1),1);
+    m=int16(m);
+    
+    new_x=m-disp_left.*p;
+    new_x(new_x<0 | new_x > size(leftrgb,2))=m(new_x<0 | new_x > size(leftrgb,2));
+    new_x=uint16(new_x);
+    im_holes_l=zeros(size(leftrgb));
+    
+    for i=1:size(leftrgb,1)
+        for j=1:size(leftrgb,2)
+                im_synth_l(i,new_x(i,j),:)=leftrgb(i,j,:);
+                %rudimentary hole filling;
+                zz = repelem(squeeze(im_synth_l(i,new_x(i,j),:)),(j-new_x(i,j)+1));
+                im_synth_l(i,new_x(i,j):j,:)=reshape(zz, size(im_synth_l(i,new_x(i,j):j,:)));     
+        end
+    end
+    %im_holes_l=im_holes_l-im_synth_l;
+    
+    im_synth_l=uint8(im_synth_l);
+    
+    
+    im_synth_r=zeros(size(rightrgb));
+    rowvls=1:size(rightrgb,2);
+    m=repmat(rowvls,size(rightrgb,1),1);
+    m=int16(m);
+    
+    new_x=m+disp_right.*(1-p);
+    new_x(new_x<0 | new_x > size(rightrgb,2))=m(new_x<0 | new_x > size(rightrgb,2));
+    new_x=int16(new_x);
+    im_holes_r=zeros(size(leftrgb));
+    
+    for i=1:size(rightrgb,1)
+        for j=1:size(rightrgb,2)
+                im_synth_r(i,new_x(i,j),:)=rightrgb(i,j,:);
+                %rudimentary hole filling;
+                zz = repelem(squeeze(im_synth_r(i,new_x(i,j),:)),(new_x(i,j)-j+1));
+                im_synth_r(i,j:new_x(i,j),:)=reshape(zz, size(im_synth_r(i,j:new_x(i,j),:)));     
+        end
+    end
+    im_synth_r=uint8(im_synth_r);
+    im_holes_l=uint8(im_holes_l);
+    im_holes_r=uint8(im_holes_r);
+    
+    im_synth_r=im_synth_r+im_synth_l.*uint8(im_synth_r==0 & im_synth_l~=0);
+    im_synth_r=im_synth_r+im_holes_r.*uint8(im_synth_r==0 & im_holes_r~=0);
+    
+    im_synth_l=im_synth_l+im_synth_r.*uint8(im_synth_l==0 & im_synth_r~=0);
+    im_synth_l=im_synth_l+im_holes_l.*uint8(im_synth_l==0 & im_holes_l~=0);
+    im_synth=im_synth_l
+end

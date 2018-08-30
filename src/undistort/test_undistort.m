@@ -1,7 +1,7 @@
 function test_undistort()
 %% load data
-IL = rgb2gray(imread('L1.JPG'));
-IR = rgb2gray(imread('R1.JPG'));
+IL = imread('L1.JPG');
+IR = imread('R1.JPG');
 load('camera_param.mat', 'params');
 
 figure

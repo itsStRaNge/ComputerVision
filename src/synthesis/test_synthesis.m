@@ -1,20 +1,16 @@
 function test_synthesis()
 %% load data
-load('disparity', 'IL_resized');
-load('disparity', 'IR_resized');
-load('disparity', 'disparity_map');
+load ws_test
 
-v=VideoWriter('test_sequence.avi');
-open(v);
 
-outputImage = synthesis(disparity_map,IL_resized,IR_resized,0.5);
+%outputImage1 = synthesis_one_side(disp_left,IL_resized,IR_resized,1);
+outputImage2 = synthesis_both_sides(disp_left,disp_right,I1_small,I2_small,0.5);
+
 save('synthesis.mat', 'outputImage');
 
 %% apply synthesis for different p
 for p=0:0.02:1
     % apply synthesis for one p
-    outputImage = synthesis(disparity_map,IL_resized,IR_resized,p);
-    writeVideo(v,outputImage);
-end
-close(v);
+    outputImage = synthesis_one_side(disparity_map,IL_resized,IR_resized,p);
+    imwrite(outputImage,strcat('im_',sprintf('%02d',p*50),'.jpg'));
 end
