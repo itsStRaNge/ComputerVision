@@ -3,6 +3,11 @@ function [JL, JR, HL, HR] = du_rectification(IL, IR, Corr, plot)
 xx1 = Corr(1:2,:)';
 xx2 = Corr(3:4,:)';
 
+%% use this hack to distinguish between image and empty space later,
+%% after rectification has been applied
+IL = IL + 1;
+IR = IR + 1;
+
 % Notes:
 % (1) xx1 and xx2 should both be of size n-by-2 matrices, with one image point per row.
 %     Here n is the number of corresponding points and, for the estimation of the
@@ -53,36 +58,20 @@ newx2 = pflat(HR*x2);
 % -----
 % plot the input images
 if plot
-    figure(1),
-    imagesc(axis_x, axis_y, IL), axis xy, axis on, hold on
-    plot(x1(1,:), x1(2,:), 'g*')
-    text(x1(1,:), x1(2,:), num2str( (1:no_matches)' ));
-    title('First original image');
-    if imagetype == 'g', colormap gray; end
-
-    figure(2),
-    imagesc(axis_x, axis_y, IR), axis xy, axis on, hold on
-    plot(x2(1,:), x2(2,:), 'g*')
-    text(x2(1,:), x2(2,:), num2str( (1:no_matches)' ));
-    title('Second original image');
-    if imagetype == 'g', colormap gray; end
-
     % plot the outputs
     figure(3),
     imagesc(minx:maxx, maxy:-1:miny, JL), axis xy, axis on, hold on
     line([minx; maxx]*ones(1,no_matches), [newx1(2,:); newx1(2,:)]);
-    plot(newx1(1,:), newx1(2,:), 'g*')
+    %plot(newx1(1,:), newx1(2,:), 'g*')
     axis equal
     title('First rectified image');
-    if imagetype == 'g', colormap gray; end
 
     figure(4),
     imagesc(minx:maxx, maxy:-1:miny, JR), axis xy, axis on, hold on
     line([minx; maxx]*ones(1,no_matches), [newx2(2,:); newx2(2,:)]);
-    plot(newx2(1,:), newx2(2,:), 'g*')
+    %plot(newx2(1,:), newx2(2,:), 'g*')
     axis equal
     title('Second rectified image');
-    if imagetype == 'g', colormap gray; end
 end
 
 end

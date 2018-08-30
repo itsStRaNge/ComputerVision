@@ -1,7 +1,7 @@
 function test_rectification()
 %% load data
 IL = imread('L1.JPG');
-IR = imread('R1.JPG');
+IR = rgb2gray(imread('R1.JPG'));
 load('camera_param_1', 'camera_param');
 load('motion', 'R');
 load('motion', 'T');
@@ -11,7 +11,6 @@ load('motion', 'T');
 
 load('corr', 'Corr');
 [JL, JR, ~, ~] = du_rectification(IL, IR, Corr, true);
-
 %% plot original and rectified images
 subplot(2,2,1);
 imshow(IL);
