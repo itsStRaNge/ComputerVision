@@ -41,7 +41,7 @@ while (1)
       break;
    elseif idx(end) > len
       idx = idx(1:len-idx(1)+1);
-   end
+   end       
    newxy(:,idx) = invH*([x(idx); y(idx); ones(1,length(idx))]);
    newxy(:,idx) = pflat(newxy(:,idx));
    idx = idx + mm;

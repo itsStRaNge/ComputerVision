@@ -20,7 +20,7 @@ no_matches = size(xx1,1);
 x1 = [xx1 ones(size(xx1,1), 1)]';
 x2 = [xx2 ones(size(xx2,1), 1)]';
 % operations for note (2) above
-siz = size(im1);
+siz = size(IL);
 origin = [siz(2); siz(1)]/2;
 
 axis_x = -origin(1) : (origin(1)-1);

@@ -7,8 +7,10 @@ load('motion', 'R');
 load('motion', 'T');
 
 %% get rectified images
-[JL, JR, ~, ~] = rectification(IL, IR, R, T', camera_param.IntrinsicMatrix','du');
+% [JL, JR, ~, ~] = cv_rectify(IL, IR, R, T', camera_param.IntrinsicMatrix');
 
+load('corr', 'Corr');
+[JL, JR, ~, ~] = du_rectification(IL, IR, Corr, false);
 %% plot original and rectified images
 subplot(2,2,1);
 imshow(IL);
