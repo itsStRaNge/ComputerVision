@@ -1,20 +1,22 @@
 close all;
-% Example 2, Corresponding points
 % Load images
 %I1=imread('TestImages/lena1.png');
 %I2=imread('TestImages/lena2.png');
-I1=imread('TestImages/L1.JPG');
-I2=imread('TestImages/R1.JPG');
+%I1=imread('TestImages/L1.JPG');
+%I2=imread('TestImages/R1.JPG');
 
-m = feature_extracting_matching(I1,I2,true);
+I1=imread('TestImages/L1_undist.png');
+I2=imread('TestImages/R1_undist.png');
 
-K = calibration_1;
-E = eight_point_algorithm(m.robust_correspondences, K);
-rtl = motion_estimation(m.robust_correspondences, E, K);
+K1 = [2.907774415279790e+03,0,1.501913243379144e+03;0,2.907741181744915e+03,9.905798537156231e+02;0,0,1];
+m = feature_extracting_matching(I1, I2, K1, true);
 
 return;
 
-
+% For L1+R1 with calibration_1
+K = [2.907774415279790e+03,0,1.501913243379144e+03;0,2.907741181744915e+03,9.905798537156231e+02;0,0,1];
+R = [0.990570139169678,-0.101519640103020,0.092003054616235;0.094810355889047,0.992697429644380,0.074584244942446;-0.098902961540880,-0.065158083541459,0.992961544244110];
+T = [-8.343984594730149;-0.437756504197512;15.712896422762970];
 
 
 

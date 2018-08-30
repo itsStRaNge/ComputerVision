@@ -32,5 +32,7 @@ function EF = eight_point_algorithm(correspondences, K)
     else
         % Estimate Fundamental Matrix F
         EF = Ug*sigma*Vg';
-    end  
+    end
+    
+    
 end
