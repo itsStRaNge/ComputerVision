@@ -6,10 +6,8 @@ function EF = eight_point_algorithm(correspondences, K)
     
     % Calibrate coordinates if K given
     if nargin == 2
-        for i=1:size(correspondences,2)
-           x1(:,i) = K\x1(:,i);
-           x2(:,i) = K\x2(:,i);
-        end
+        x1 = K\x1;
+        x2 = K\x2;
     end
     
     % Create linear equation system
