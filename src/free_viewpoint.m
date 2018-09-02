@@ -34,8 +34,9 @@ print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
 
 
+
 %% feature extracting
-print_console(gui_console, '2/8\t Extracting SURF Features\t 15.00s'); 
+print_console(gui_console, '2/8\t Extracting SURF Features\t\t 20.00s'); 
 start = tic;
 feat = feature_extracting(IL_d,IR_d,false);
 print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
@@ -47,17 +48,28 @@ matches = feature_matching(feat.P1, feat.D1, feat.P2, feat.D2);
 matches = ransac_algorithm(matches(:,1:200), 'epsilon', 0.75, 'tolerance', 0.1);
 print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
-% %% get essential matrix
-% print_console(gui_console, '3/8\t Estimate Essential Matrix\t 0.00s'); 
-% start = tic;
-% E = eight_point_algorithm(matches, K);
-% print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
-% 
-% %% compute eukledian motion
-% print_console(gui_console, '4/8\t Computing Motion\t\t 0.10s'); 
-% start = tic;
-% [R, T, lambda] = motion_estimation(matches, E, K);
-% print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
+%% get essential matrix
+print_console(gui_console, '3/8\t Estimate Essential Matrix\t 0.00s'); 
+start = tic;
+E = eight_point_algorithm(matches, K);
+print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
+    
+%% compute eukledian motion
+print_console(gui_console, '4/8\t Computing Motion\t\t 0.10s'); 
+start = tic;
+[R, T, lambda] = motion_estimation(matches, E, K);
+% %     lambda(lambda>0) = 0;
+% %     if nnz(lambda) ~= 0
+%         % Visualize F based on matches
+%         F1 = eight_point_algorithm(matches);
+%         visualize_F(IL_d, IR_d, feat.P1, feat.P2, F1);
+%         % Visualize F computed based on R, T, K
+%         T_dach = [0 -T(3) T(2); T(3) 0 -T(1); -T(2) T(1) 0];
+%         F2 = K'\E/K;
+%         visualize_F(IL_d, IR_d, feat.P1, feat.P2, F2);
+% %     end
+print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
+
 
 %% rectificate images (crop or not)
 print_console(gui_console, '5/8\t Apply Rectification\t\t 3.80s');
