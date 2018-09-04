@@ -1,6 +1,6 @@
 %um rektifizierung zu überprüfen
-I1 = rgb2gray(imread('L2_rect.png'));
-I2 = rgb2gray(imread('R2_rect.png'));
+I1 = rgb2gray(imread('im_hand_l.png'));
+I2 = rgb2gray(imread('im_hand_r.png'));
 
 
 points1 = detectSURFFeatures(I1);

@@ -29,7 +29,7 @@ max_image_size=p.Results.size;
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%Play with these for different results!
-max_disp=0.15*max_image_size;
+max_disp=0.1*max_image_size;
 window_size=(0.05*max_image_size*2)/2 +1;
 num_clusters=25;
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,10 +74,21 @@ end
         error('mode not specified correctly');
     end
     
-    %size back to original:
-    disp_left=imresize(disp_left,[size(IL,1),size(IL,2)]);
-    disp_right=imresize(disp_right,[size(IR,1),size(IR,2)]);
-    disp_left=disp_left*(1/size_factor);
-    disp_right=disp_right*(1/size_factor);
+    %check for bad vals
+    disp_left(disp_left>max_disp)=max_disp;
+    disp_left(disp_left<-max_disp)=-max_disp;
+    disp_right(disp_right>max_disp)=max_disp;
+    disp_right(disp_right<-max_disp)=-max_disp;
+    
+    %size back to original if needed
+    if(size(IL,1)>max_image_size ||size(IL,2)>max_image_size);
+        disp_left=imresize(disp_left,[size(IL,1),size(IL,2)]);
+        disp_right=imresize(disp_right,[size(IR,1),size(IR,2)]);
+        disp_left=disp_left*(1/size_factor);
+        disp_right=disp_right*(1/size_factor);
+        disp_left=int16(disp_left);
+        disp_right=int16(disp_right);
+    end
+    
 end
 

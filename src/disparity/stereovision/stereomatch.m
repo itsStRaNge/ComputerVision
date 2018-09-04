@@ -77,8 +77,6 @@ end
 
 %needed because the algorithm sometimes puts out weird values
 spdmap=int16(spdmap);
-spdmap(spdmap>disparity)=disparity;
-spdmap(spdmap<0)=0;
 
 warning on;
 end

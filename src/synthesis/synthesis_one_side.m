@@ -7,9 +7,9 @@ function im_synth = synthesis_one_side(disp_map,leftrgb,rightrgb,p)
     m=repmat(rowvls,size(leftrgb,1),1);
     m=int16(m);
     
-    new_x=m-disp_map.*p;
-    new_x(new_x<0 | new_x > size(leftrgb,2))=m(new_x<0 | new_x > size(leftrgb,2));
-    new_x=uint16(new_x);
+    new_x=m-int16(disp_map).*p;
+    new_x(new_x<1 | new_x > size(leftrgb,2))=m(new_x<1 | new_x > size(leftrgb,2));
+    new_x=int16(new_x);
     
     for i=1:size(leftrgb,1)
         for j=1:size(leftrgb,2)
