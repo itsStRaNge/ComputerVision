@@ -3,12 +3,12 @@
 function [filld] = disparity_segmentation(leftrgb,rightrgb,Bin_nos)
 
  %leftrgb=imread('imL.png');                   %left image
- %rightrgb=imread('imR.png');              %right image
+ %rightrgb=imread('imR.png');%right image
  
  [row_img_big, col_img_big]=size(rgb2gray(leftrgb));                        %size of input image
  
-%  leftrgb=imcrop(leftrgb1,[15 15 col_img_big-25 row_img_big-25]);            %cropping image
-%  rightrgb=imcrop(rightrgb1,[15 15 col_img_big-25 row_img_big-25]);
+  leftrgb=imcrop(leftrgb,[15 15 col_img_big-25 row_img_big-25]);            %cropping image
+  rightrgb=imcrop(rightrgb,[15 15 col_img_big-25 row_img_big-25]);
 
  left=rgb2gray(leftrgb);      
  right=rgb2gray(rightrgb);
@@ -31,9 +31,7 @@ cord_right=points_right(indexPairs(:,2)).Location;
 index=find(abs(((cord_left(:,2)-cord_right(:,2))))<1);
 cord_left1=cord_left(index,:);
 cord_right1=cord_right(index,:);
-
-figure(1); showMatchedFeatures(left,right,cord_left1,cord_right1,'PlotOptions',{'ro','go','y'});          
-  
+ 
 M=zeros(row_img,col_img);
         
 M(sub2ind(size(M),floor(cord_left1(:,2)),floor(cord_left1(:,1))))=abs(floor(cord_left1(:,1)-cord_right1(:,1)));
@@ -475,6 +473,4 @@ end
  %normalizing the image for display purpose.
  norm=floor(max(max(out_image)))+20;   
     filld = opti_fill2( out_image,row_img,col_img );
-imshow(filld,'DisplayRange',[0 norm]);
-%  imwrite(uint8(4*out_image),'F:\Dropbox\Hemraj\matlab_files\final_code\waste.png');
 end

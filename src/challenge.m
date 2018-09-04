@@ -9,11 +9,9 @@ members = {'Alexander Lechthaler', 'Patrick von Velasco', 'Lukas Bernhard', 'Tho
 % Email-Adress (from Moodle!):
 mail = {'alexander.lechthaler@tum.de', 'ga38kon@mytum.de', 'l.bernhard@tum.de', 't.hartmann@tum.de'};
 
-
-%% Load images
-close all;
-IL = imread('L1.JPG');
-IR = imread('R1.JPG');
+%% Load images and K
+IL = imread('L2.JPG');
+IR = imread('R2.JPG');
 
 %% load camera params
 load('camera_param_1.mat', 'camera_param');
@@ -22,9 +20,7 @@ load('camera_param_1.mat', 'camera_param');
 tic;
 
 %% create new image
-output_image = free_viewpoint(IL, IR, camera_param, "p", 0.5, ...
-                                "load_disparity", false);
-
+output_image = free_viewpoint(IL, IR, camera_param, "p", 0.5, "load_disparity", false);
 
 %% stop time
 fprintf('End\t Total Time\t\t\t\t\t%.2fs\n', toc);

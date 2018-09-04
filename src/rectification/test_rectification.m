@@ -1,16 +1,15 @@
 function test_rectification()
 %% load data
-IL = imread('L1.JPG');
-IR = imread('R1.JPG');
-load('camera_param_1', 'camera_param');
-load('motion', 'R');
-load('motion', 'T');
+IL = rgb2gray(imread('L1_undist.JPG'));
+IR = rgb2gray(imread('R1_undist.JPG'));
+load('camera_param', 'params');
+load('r_t', 'R');
+load('r_t', 'T');
+load('e', 'E');
+load('corr', 'Corr');
 
 %% get rectified images
-% [JL, JR, ~, ~] = cv_rectify(IL, IR, R, T', camera_param.IntrinsicMatrix');
-
-load('corr', 'Corr');
-[JL, JR, ~, ~] = du_rectification(IL, IR, Corr, true);
+[JL, JR, ~, ~] = rectification(IL, IR, R, T', params.IntrinsicMatrix','svd');
 
 %% plot original and rectified images
 subplot(2,2,1);

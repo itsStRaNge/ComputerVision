@@ -35,16 +35,17 @@ if load_disparity_map < 0.5
 else
     load_disparity_map = true;
 end
-% load_motion = get(handles.load_motion, 'Value');
-% if load_motion < 0.5
-%     load_motion = false;
-% else
-%     load_motion = true;
-% end
+load_motion = get(handles.load_motion, 'Value');
+if load_motion < 0.5
+    load_motion = false;
+else
+    load_motion = true;
+end
 
 % create new image
 output_img = free_viewpoint(handles.IL, handles.IR, handles.K,...
                         "p", p, "load_disparity_map", load_disparity_map, ...
+                        "load_fundamental_matrix", load_motion,...
                         "gui_console", handles.console);
 
 % display new image
