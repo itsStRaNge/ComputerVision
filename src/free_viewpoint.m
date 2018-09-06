@@ -62,7 +62,10 @@ end
 %% rectificate images (crop or not)
 print_console(gui_console, '5/8\t Apply Rectification\t\t 3.80s');
 start = tic;
-[JL, JR, HomographyL, HomographyR] = rectification(IL, IR, R, T', K,'kit');
+%[JL, JR, HomographyL, HomographyR] = rectification(IL, IR, R, T', K,'kit');
+%check if this 
+[JL,JR,HomographyL,HomographyR]=rectify_trondheim(IL,IR);
+
 print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
 %% depth map 
