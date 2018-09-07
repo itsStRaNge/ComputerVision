@@ -33,7 +33,11 @@ function im_synth = synthesis_both_sides(disp_left,disp_right,leftrgb,rightrgb,p
     
     for i=1:size(leftrgb,1)
         for j=1:size(leftrgb,2)
-                im_synth_l(i,new_x(i,j),:)=leftrgb(i,j,:);
+                if(all(leftrgb(i,j,:)==0) || all(rightrgb(i,j,:)==0))
+                    im_synth_l(i,new_x(i,j),:)=0;
+                else
+                    im_synth_l(i,new_x(i,j),:)=leftrgb(i,j,:);
+                end
         end
     end
     
@@ -50,7 +54,11 @@ function im_synth = synthesis_both_sides(disp_left,disp_right,leftrgb,rightrgb,p
     
     for i=1:(size(rightrgb,1)-1)
         for j=1:(size(rightrgb,2)-1)
-                im_synth_r(i,new_x(i,j),:)=rightrgb(i,j,:);         
+                if(all(leftrgb(i,j,:)==0) || all(rightrgb(i,j,:)==0))
+                    im_synth_l(i,new_x(i,j),:)=0;
+                else
+                    im_synth_r(i,new_x(i,j),:)=rightrgb(i,j,:);    
+                end
         end
     end
     
@@ -65,7 +73,7 @@ function im_synth = synthesis_both_sides(disp_left,disp_right,leftrgb,rightrgb,p
     %hole filling with linear interpolation
     for i=2:size(im_synth,1)
         for j=2:size(im_synth,2)
-            if(im_synth(i,j,:)==0)
+            if(all(im_synth(i,j,:)==0) && all(leftrgb(i,j,:)~=0) && all(rightrgb(i,j,:)~=0))
                 hole_left=j;
                 while(im_synth(i,j,:)==0 & j<size(im_synth,2))
                     j=j+1;

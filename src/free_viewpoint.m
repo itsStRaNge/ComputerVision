@@ -22,7 +22,7 @@ if load_disparity
     load('disparity_map', 'disparity_map');
     %% TODO resize image IL and IR
 else
-        %% undistortion lens from images
+    %% undistortion lens from images
     fprintf('1/8\t Undistorting Lens\t\t 1.50s'); 
     start = tic;
     IL_d = undistort_image(IL,camera_param.FocalLength(1),camera_param.PrincipalPoint(1),...
@@ -51,43 +51,44 @@ else
     %% get essential matrix
     fprintf('3/8\t Estimate Essential Matrix\t 0.00s'); 
     start = tic;
-    F = eight_point_algorithm(Corr, K);
+    E = eight_point_algorithm(Corr, K);
     fprintf('\t\t%.2fs\n', toc(start));
 
 
     %% compute eukledian motion
     fprintf('4/8\t Computing Motion\t\t 0.10s'); 
     start = tic;
-    [R, T] = motion_estimation(Corr, F, K);
+    [R, T] = motion_estimation(Corr, E, K);
     fprintf('\t\t%.2fs\n', toc(start));
 
     %% rectificate images (crop or not)
     fprintf('5/8\t Apply Rectification\t\t 3.80s');
     start = tic;
     [JL, JR, HomographyL, HomographyR] = rectification(IL, IR, R, T', K,'kit');
-    %check if this 
-    %[JL,JR,HomographyL,HomographyR]=rectify_trondheim(IL, IR, F, Corr);
-
     fprintf('\t\t%.2fs\n', toc(start));
+
     %% depth map 
     fprintf('6/8\t Creating Disparity Map\t\t 34.00s');
     start = tic;
-    [disp_left,disp_right] = ...
-        calculateDisparityMap(JL,JR,1000,max_disp_factor,win_size_factor);
+    [disp_left,disp_right,IL_resized,IR_resized] = ...
+        calculateDisparityMap(JL,JR,800,max_disp_factor,win_size_factor, 2,0);
 end
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% synthese
 fprintf('7/8\t Synthesising new Image\t\t 1.80s');
 start = tic;
-IM = synthesis_both_sides(disp_left,disp_right,IL,IR,p);
+IM = synthesis_both_sides(disp_left,disp_right, IL_resized, IR_resized, p);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% derectification
-% NOTE: not sure what homography matrix to choose
 fprintf('8/8\t Inverting Rectification\t 0.10s');
 start = tic;
-output_image = cv_inv_rectify(IM, HomographyL);
+if p <= 0.5
+    output_image = cv_inv_rectify(IM, HomographyL);
+else
+    output_image = cv_inv_rectify(IM, HomographyR);
+end
 fprintf('\t\t%.2fs\n', toc(start));
 end
 

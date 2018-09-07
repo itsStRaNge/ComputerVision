@@ -1,5 +1,5 @@
 %% Computer Vision Challenge
-
+clear
 % Groupnumber:
 group_number = 37;
 
