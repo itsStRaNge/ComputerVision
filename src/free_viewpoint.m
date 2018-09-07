@@ -58,7 +58,7 @@ fprintf('\t\t%.2fs\n', toc(start));
 %% rectificate images (crop or not)
 fprintf('5/8\t Apply Rectification\t\t 3.80s');
 start = tic;
-[JL, JR, HomographyL, HomographyR] = rectification(IL, IR, R, T', K,'kit');
+[JL, JR, HomographyL, HomographyR] = rectification(IL, IR, R, T', K);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% depth map 

@@ -1,7 +1,7 @@
 function test_rectification()
 %% load data
-IL = rgb2gray(imread('L1_undist.JPG'));
-IR = rgb2gray(imread('R1_undist.JPG'));
+IL = rgb2gray(imread('L1_undist.png'));
+IR = rgb2gray(imread('R1_undist.png'));
 load('camera_param', 'params');
 load('r_t', 'R');
 load('r_t', 'T');
@@ -9,7 +9,7 @@ load('e', 'E');
 load('corr', 'Corr');
 
 %% get rectified images
-[JL, JR, ~, ~] = rectification(IL, IR, R, T', params.IntrinsicMatrix','svd');
+[JL, JR, ~, ~] = rectification(IL, IR, R, T', params.IntrinsicMatrix','kit');
 
 %% plot original and rectified images
 subplot(2,2,1);

@@ -1,4 +1,5 @@
-function [disp_left,disp_right,IL,IR] = calculateDisparityMap(IL,IR,max_image_size,max_disp_factor,window_size_factor,gauss_filt,outlier_compensation)
+function [disp_left,disp_right,IL,IR] = calculateDisparityMap(IL,IR, ...
+    max_image_size,max_disp_factor,window_size_factor,gauss_filt,outlier_compensation)
 %Inputs: IL,IR rectified color images
 %        mode - either 'feat' or 'block' to choose the two different modes.
 %               block seems to perform better
