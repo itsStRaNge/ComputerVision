@@ -8,6 +8,9 @@ close all;
 I1=imread('TestImages/L1_undist.png');
 I2=imread('TestImages/R1_undist.png');
 
+%I3 = [I1 I2];
+%pts = read_points(I1,I2,16);
+
 K1 = [2.907774415279790e+03,0,1.501913243379144e+03;0,2.907741181744915e+03,9.905798537156231e+02;0,0,1];
 m = feature_extracting_matching(I1, I2, K1, true);
 

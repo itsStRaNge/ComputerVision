@@ -3,6 +3,21 @@ function matches = epipolar_feature_matching(points1, descriptors1, points2, des
     if nargin == 5
         %% Call matching function
         matches = matching_function(points1, descriptors1, points2, descriptors2);
+        matches_2to1 = matching_function(points2, descriptors2, points1, descriptors1);
+        matches_2to1_swap = [matches_2to1(3:4,:); matches_2to1(1:2,:)];
+         
+        for i=1:size(matches,2)
+           idx = ismember(matches_2to1_swap', matches(:,i)', 'rows');
+           if nnz(idx)
+               % match each other
+           else
+               % remove match
+               matches(:,i) = zeros(4,1);
+           end  
+        end
+       
+        matches(:,any(~matches,1)) = [];
+        
     else
         %% Presort potential matches according to F
         threshold = 0.01;

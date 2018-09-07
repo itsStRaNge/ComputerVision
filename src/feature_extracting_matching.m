@@ -22,7 +22,7 @@ function features = feature_extracting_matching(I1, I2, K, do_plot)
     end
     
     % Filter robust correspondences  
-    robust_matches = ransac_algorithm(matches(:,1:300), 'epsilon', 0.75, 'tolerance', 0.1);
+    robust_matches = ransac_algorithm(matches, 'epsilon', 0.77, 'tolerance', 0.15);
     features.robust_matches = robust_matches;
     if do_plot
         % Visualize robust correspondences
