@@ -20,7 +20,7 @@ load('camera_param_1.mat', 'camera_param');
 tic;
 
 %% create new image
-output_image = free_viewpoint(IL, IR, camera_param, 'p', 0.5, 'load_disparity', false);
+output_image = free_viewpoint(IL, IR, camera_param, 'p', 0.5);
 
 %% stop time
 fprintf('End\t Total Time\t\t\t\t\t%.2fs\n', toc);

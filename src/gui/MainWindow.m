@@ -27,16 +27,10 @@ end
 function runButton_Callback(hObject, eventdata, handles)
 % load values
 p = get(handles.pSlider, 'Value');
-load_disparity_map = get(handles.load_disparity_map,'Value');
-if load_disparity_map < 0.5
-    load_disparity_map = false;
-else
-    load_disparity_map = true;
-end
 
 % create new image
 output_img = free_viewpoint(handles.IL, handles.IR, handles.K,...
-                        'p', p, 'load_disparity_map', load_disparity_map, ...
+                        'p', p, ...
                         'max_disp_factor', handles.df, ...
                         'win_size_factor', handles.sw);
 
