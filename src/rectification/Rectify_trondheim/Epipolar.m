@@ -58,12 +58,12 @@ classdef Epipolar < handle
     methods
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        function obj = Epipolar( im1, im2, P1, P2 )% Constructor
+        function obj = Epipolar( im1, im2, F, P1, P2 )% Constructor
             obj.im1 = im1;
             obj.im2 = im2;
-            
-            % estimate the fundamental matrix 
-            [obj.F,obj.in1, obj.in2] = extractF(im1,im2);
+            obj.F = F;
+            obj.in1 = P1;
+            obj.in2 = P2;
             
             % calculate epipolar lines
             calcEpiLines(obj);

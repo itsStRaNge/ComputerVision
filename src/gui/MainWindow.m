@@ -1,7 +1,7 @@
 function varargout = MainWindow(varargin)
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 30-Aug-2018 13:22:40
+% Last Modified by GUIDE v2.5 06-Sep-2018 19:03:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -25,8 +25,6 @@ end
 %% callback functions
 
 function runButton_Callback(hObject, eventdata, handles)
-set(handles.console, 'String', '');
-print_console(handles.console, 'Start Process');
 % load values
 p = get(handles.pSlider, 'Value');
 load_disparity_map = get(handles.load_disparity_map,'Value');
@@ -35,25 +33,18 @@ if load_disparity_map < 0.5
 else
     load_disparity_map = true;
 end
-load_motion = get(handles.load_motion, 'Value');
-if load_motion < 0.5
-    load_motion = false;
-else
-    load_motion = true;
-end
 
 % create new image
 output_img = free_viewpoint(handles.IL, handles.IR, handles.K,...
-                        "p", p, "load_disparity_map", load_disparity_map, ...
-                        "load_fundamental_matrix", load_motion,...
-                        "gui_console", handles.console);
+                        'p', p, 'load_disparity_map', load_disparity_map, ...
+                        'max_disp_factor', handles.df, ...
+                        'win_size_factor', handles.sw);
 
 % display new image
 axes(handles.outputImage);
 imshow(output_img);
 title_str = strcat('P = ', num2str(p));
 title(handles.outputImage,title_str);
-print_console(handles.console, 'Finished');
 
 function cameraCallibrationButton_Callback(hObject, eventdata, handles)
 % load data
@@ -72,13 +63,10 @@ number = get(handles.pSlider,'Value');
 
 if isempty(number)
     number = 0.5;
-    print_console(handles.console, 'Input must be numerical');
 elseif number < 0
     number = 0.0;
-    print_console(handles.console, 'Input must be >=0');
 elseif number > 1
     number = 1.0;
-    print_console(handles.console, 'Input must be <= 1');
 end
 set(handles.pValue, 'String', num2str(number));
 
@@ -114,13 +102,10 @@ number = str2double(str);
 
 if isempty(number)
     number = 0.5;
-    print_console(handles.console, 'Input must be numerical');
 elseif number < 0
     number = 0.0;
-    print_console(handles.console, 'Input must be >= 0');
 elseif number > 1
     number = 1.0;
-    print_console(handles.console, 'Input must be <= 1');
 end
 set(handles.pSlider, 'Value', number);
 set(hObject, 'String', num2str(number));
@@ -167,10 +152,59 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+% --- Executes on button press in load_disparity_map.
+function load_disparity_map_Callback(hObject, eventdata, handles)
+% hObject    handle to load_disparity_map (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of load_disparity_map
+
+
+% --- Executes on slider movement.
+function dfSlider_Callback(hObject, eventdata, handles)
+number = get(handles.dfSlider,'Value'); 
+
+if isempty(number)
+    number = 0.5;
+elseif number < 0
+    number = 0.0;
+elseif number > 1.0
+    number = 1.0;
+end
+set(handles.dfValue, 'String', num2str(number));
 
 % --- Executes during object creation, after setting all properties.
-function console_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to console (see GCBO)
+function dfSlider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to dfSlider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+
+function dfValue_Callback(hObject, eventdata, handles)
+str=get(hObject,'String');
+number = str2double(str);
+
+if isempty(number)
+    number = 0.5;
+elseif number < 0
+    number = 0.0;
+elseif number > 1
+    number = 1.0;
+end
+set(handles.dfSlider, 'Value', number);
+set(hObject, 'String', num2str(number));
+
+
+% --- Executes during object creation, after setting all properties.
+function dfValue_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to dfValue (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -181,10 +215,54 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in load_disparity_map.
-function load_disparity_map_Callback(hObject, eventdata, handles)
-% hObject    handle to load_disparity_map (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% --- Executes on slider movement.
+function swSlider_Callback(hObject, eventdata, handles)
+number = get(handles.swSlider,'Value'); 
 
-% Hint: get(hObject,'Value') returns toggle state of load_disparity_map
+if isempty(number)
+    number = 0.05;
+elseif number < 0
+    number = 0.0;
+elseif number > 0.2
+    number = 0.2;
+end
+set(handles.swValue, 'String', num2str(number));
+
+% --- Executes during object creation, after setting all properties.
+function swSlider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to swSlider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+
+function swValue_Callback(hObject, eventdata, handles)
+str=get(hObject,'String');
+number = str2double(str);
+
+if isempty(number)
+    number = 0.5;
+elseif number < 0
+    number = 0.0;
+elseif number > 1
+    number = 1.0;
+end
+set(handles.swSlider, 'Value', number);
+set(hObject, 'String', num2str(number));
+
+% --- Executes during object creation, after setting all properties.
+function swValue_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to swValue (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

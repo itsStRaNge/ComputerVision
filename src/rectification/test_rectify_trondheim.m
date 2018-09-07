@@ -1,11 +1,22 @@
 function test_rectify_trondheim()
 %% load data
-IL = rgb2gray(imread('L1_undist.JPG'));
-IR = rgb2gray(imread('R1_undist.JPG'));
+IL = rgb2gray(imread('L1_undist.png'));
+IR = rgb2gray(imread('R1_undist.png'));
+load('Corr', 'Corr');
+load('camera_param', 'params');
+K = params.IntrinsicMatrix';
 
+F = eight_point_algorithm(Corr, K);
 
 %% get rectified images
-[JL, JR, H1, H2] = rectify_trondheim(IL, IR);
+for i=1:10% try until good rectification (or count)
+    fprintf('Rectifying, trial %d\n',i)
+    [JL,JR,HomographyL,HomographyR, success]=rectify_trondheim(IL, IR, F, Corr);
+    if success
+        break;
+    end
+end
+
 
 %% plot original and rectified images
 subplot(2,2,1);
