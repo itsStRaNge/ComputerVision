@@ -1,6 +1,4 @@
-function EF = eight_point_algorithm(correspondences, K)  
-    %% code from computer vision homework
-    
+function EF = eight_point_algorithm(correspondences, K)    
     % Convert to homogen coordinates
     onesRow = ones(1,size(correspondences,2));
     x1 = [correspondences(1:2,:); onesRow];
@@ -8,10 +6,8 @@ function EF = eight_point_algorithm(correspondences, K)
     
     % Calibrate coordinates if K given
     if nargin == 2
-        for i=1:size(correspondences,2)
-           x1(:,i) = K\x1(:,i);
-           x2(:,i) = K\x2(:,i);
-        end
+        x1 = K\x1;
+        x2 = K\x2;
     end
     
     % Create linear equation system
@@ -34,5 +30,7 @@ function EF = eight_point_algorithm(correspondences, K)
     else
         % Estimate Fundamental Matrix F
         EF = Ug*sigma*Vg';
-    end  
+    end
+    
+    
 end
