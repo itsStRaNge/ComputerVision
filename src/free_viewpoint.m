@@ -6,7 +6,7 @@ g.addOptional('p', 0.5, @isnumeric);
 ValidDispFac = @(x) isnumeric(x) && (x >= 0.0) && (x <= 1.0);
 WinSizeFac = @(x) isnumeric(x) && (x >= 0.0) && (x <= 0.2);
 g.addOptional('max_disp_factor', 0.5, ValidDispFac);
-g.addOptional('win_size_factor', 0.05, WinSizeFac);
+g.addOptional('win_size_factor', 0.08, WinSizeFac);
 g.parse(varargin{:});
 p = g.Results.p;
 max_disp_factor = g.Results.max_disp_factor;
@@ -70,7 +70,7 @@ fprintf('\t\t%.2fs\n', toc(start));
 fprintf('6/8\t Creating Disparity Map\t\t 34.00s');
 start = tic;
 [disp_left,disp_right,IL_resized,IR_resized] = ...
-    calculateDisparityMap(JL,JR,800,max_disp_factor,win_size_factor, 2,0);
+    calculateDisparityMap(JL,JR,1000,max_disp_factor,win_size_factor, 2,1);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% synthese
