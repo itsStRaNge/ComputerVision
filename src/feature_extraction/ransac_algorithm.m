@@ -1,6 +1,4 @@
 function robust_correspondences = ransac_algorithm(correspondences, varargin)
-    %% code from computer vision homework
-    
     check_epsilon = @(x) isnumeric(x) && x>0 && x<1;
     check_p =  @(x) isnumeric(x) && x>0 && x<1;
     check_tolerance = @(x) isnumeric(x);
