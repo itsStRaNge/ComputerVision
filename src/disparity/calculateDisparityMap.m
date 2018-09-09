@@ -46,7 +46,7 @@ end
 %%end of preprocessing
 
         disp_left =stereomatch(IL_prep,IR_prep,window_size,max_disp,0);
-        disp_right=stereomatch(fliplr(IR_prep),fliplr(IL_prep),window_size,max_disp,1);
+        disp_right=stereomatch(fliplr(IR_prep),fliplr(IL_prep),window_size,max_disp,0);
         disp_right=fliplr(disp_right);
 
     %check for bad vals

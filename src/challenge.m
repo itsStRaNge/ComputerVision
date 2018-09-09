@@ -11,8 +11,8 @@ members = {'Alexander Lechthaler', 'Patrick von Velasco', 'Lukas Bernhard', 'Tho
 mail = {'alexander.lechthaler@tum.de', 'ga38kon@mytum.de', 'l.bernhard@tum.de', 't.hartmann@tum.de'};
 
 %% Load images and K
-IL=imread('L1.JPG');
-IR=imread('R1.JPG');
+IL=imread('L2.JPG');
+IR=imread('R2.JPG');
 
 %% load camera params
 load('camera_param_1.mat', 'camera_param');
