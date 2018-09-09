@@ -63,7 +63,7 @@ function features = feature_extracting(I1, I2, do_plot)
 end
 
 
-function visualize_matches(I1, I2, correspondences, max)
+function visualize_matches(I1, I2, matches, max)
     % Visualize correspondences
     figure();
     bottomImg = imshow(I1);
@@ -73,16 +73,16 @@ function visualize_matches(I1, I2, correspondences, max)
     topImg = imshow(I2);
     set(topImg, 'AlphaData', alpha);
     
-    if max > size(correspondences,2)
-        max = size(correspondences,2);
+    if max > size(matches,2)
+        max = size(matches,2);
     end
 
-    plot(correspondences(1,1:max), correspondences(2,1:max),'rs');
-    plot(correspondences(3,1:max), correspondences(4,1:max),'g*');
+    plot(matches(1,1:max), matches(2,1:max),'rs');
+    plot(matches(3,1:max), matches(4,1:max),'g*');
 
     % Show first max matches
     for i=1:max
-      plot([correspondences(1,i), correspondences(3,i)], [correspondences(2,i), correspondences(4,i)],'Color','b','LineWidth',1);
+      plot([matches(1,i), matches(3,i)], [matches(2,i), matches(4,i)],'Color','b','LineWidth',1);
     end
     drawnow();
 end

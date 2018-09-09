@@ -12,8 +12,8 @@ mail = {'alexander.lechthaler@tum.de', 'ga38kon@mytum.de', 'l.bernhard@tum.de', 
 
 %% Load images
 close all;
-IL = imread('L1.JPG');
-IR = imread('R1.JPG');
+IL=imread('TestImages/L1_undist.png');
+IR=imread('TestImages/R1_undist.png');
 
 %% load camera params
 load('camera_param_1.mat', 'camera_param');

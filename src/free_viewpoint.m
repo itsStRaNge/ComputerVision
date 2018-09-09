@@ -33,7 +33,7 @@ IR_d = undistort_image(IR,camera_param.FocalLength(1),camera_param.PrincipalPoin
 print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
 
-
+debug = true
 
 %% feature extracting
 print_console(gui_console, '2/8\t Extracting SURF Features\t\t 20.00s'); 
@@ -45,7 +45,13 @@ print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 print_console(gui_console, '2/8\t Feature Matching\t\t 15.00s'); 
 start = tic;
 matches = feature_matching(feat.P1, feat.D1, feat.P2, feat.D2);
-matches = ransac_algorithm(matches(:,1:200), 'epsilon', 0.75, 'tolerance', 0.1);
+matches = ransac_algorithm(matches(:,1:200), 'epsilon', 0.77, 'tolerance', 0.15);
+if debug
+    visualize_matches(IL_d, IR_d, matches, 300);
+    % Visualize F as matching quality meassure
+    F1 = eight_point_algorithm(matches);
+    visualize_F(IL_d, IR_d, feat.P1, feat.P2, F1);
+end
 print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 
 %% get essential matrix
@@ -104,3 +110,26 @@ output_image = cv_inv_rectify(IM, HomographyL);
 print_console(gui_console, sprintf('\t\t%.2fs\n', toc(start)));
 end
 
+function visualize_matches(I1, I2, matches, max)
+    % Visualize correspondences
+    figure();
+    bottomImg = imshow(I1);
+    hold on;
+    alpha = 0.5.*ones(size(I2,1),size(I2,2));
+    set(bottomImg, 'AlphaData', alpha);
+    topImg = imshow(I2);
+    set(topImg, 'AlphaData', alpha);
+    
+    if max > size(matches,2)
+        max = size(matches,2);
+    end
+
+    plot(matches(1,1:max), matches(2,1:max),'rs');
+    plot(matches(3,1:max), matches(4,1:max),'g*');
+
+    % Show first max matches
+    for i=1:max
+      plot([matches(1,i), matches(3,i)], [matches(2,i), matches(4,i)],'Color','b','LineWidth',1);
+    end
+    drawnow();
+end

@@ -3,6 +3,21 @@ function matches = epipolar_feature_matching(points1, descriptors1, points2, des
     if nargin == 5
         %% Call matching function
         matches = matching_function(points1, descriptors1, points2, descriptors2);
+        matches_2to1 = matching_function(points2, descriptors2, points1, descriptors1);
+        matches_2to1_swap = [matches_2to1(3:4,:); matches_2to1(1:2,:)];
+         
+        for i=1:size(matches,2)
+           idx = ismember(matches_2to1_swap', matches(:,i)', 'rows');
+           if nnz(idx)
+               % match each other
+           else
+               % remove match
+               matches(:,i) = zeros(4,1);
+           end  
+        end
+       
+        matches(:,any(~matches,1)) = [];
+        
     else
         %% Presort potential matches according to F
         threshold = 0.01;
@@ -87,29 +102,3 @@ function matches = epipolar_feature_matching(points1, descriptors1, points2, des
             
     end
 end
-
-
-%    else               
-%         %% Match descriptors
-%         err = zeros(1,size(points1,2));
-%         cor1 = 1:size(points1,2);
-%         cor2 = zeros(1,size(points1,2));
-%         
-%         for i=1:size(points1,2)
-%           % SSD metric
-%           d1_rep = repmat(descriptors1(:,i),[1 size(points2,2)]);
-%           distance = sum((descriptors2-d1_rep).^2,1);
-%           [err(i), cor2(i)] = min(distance);
-%           % Avoid multiple matches
-%           %descriptors2(:,cor2(i)) = Inf(size(descriptors2,1),1);
-%         end
-% 
-%         % Sort matches on vector distance
-%         [err, ind] = sort(err);
-%         cor1 = cor1(ind); 
-%         cor2 = cor2(ind);
-% 
-%         % Create correspondence matrix [x1;y1;x2,y2]
-%         matches = [ points1(:,cor1);
-%                     points2(:,cor2)];
-    
