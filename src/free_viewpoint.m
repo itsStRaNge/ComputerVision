@@ -5,12 +5,20 @@ g.addOptional('load_disparity_map', true, @islogical);
 g.addOptional('p', 0.5, @isnumeric);
 ValidDispFac = @(x) isnumeric(x) && (x >= 0.0) && (x <= 1.0);
 WinSizeFac = @(x) isnumeric(x) && (x >= 0.0) && (x <= 0.2);
-g.addOptional('max_disp_factor', 0.5, ValidDispFac);
-g.addOptional('win_size_factor', 0.08, WinSizeFac);
+MedFiltWindow = @(x) isnumeric(x) && (x >= 0);
+gaussFilt    = @(x) isnumeric(x) && (x>=0);
+
+g.addOptional('max_disp_factor', 0.2, ValidDispFac);
+g.addOptional('win_size_factor', 0.005, WinSizeFac);
+g.addOptional('med_filt_window', 20, MedFiltWindow);
+g.addOptional('gauss_filt', 2, gaussFilt);
+
 g.parse(varargin{:});
 p = g.Results.p;
 max_disp_factor = g.Results.max_disp_factor;
 win_size_factor = g.Results.win_size_factor;
+med_filt_window = g.Results.med_filt_window;
+gauss_filt = g.Results.gauss_filt;
 K = camera_param.IntrinsicMatrix';
 
 fprintf('Step\t Task\t\t\t\t Time Est.\tTime\n');
@@ -44,7 +52,8 @@ fprintf('\t\t%.2fs\n', toc(start));
 fprintf('2/8\t Feature Matching\t\t 15.00s'); 
 start = tic;
 matches = feature_matching(feat.P1, feat.D1, feat.P2, feat.D2);
-matches = ransac_algorithm(matches(:,1:200), 'epsilon', 0.77, 'tolerance', 0.15);
+matches = ransac_algorithm(matches(:,1:70), 'epsilon', 0.77, 'tolerance', 0.15);
+
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% get essential matrix
@@ -63,29 +72,43 @@ fprintf('\t\t%.2fs\n', toc(start));
 %% rectificate images (crop or not)
 fprintf('5/8\t Apply Rectification\t\t 3.80s');
 start = tic;
-[JL, JR, HomographyL, HomographyR] = rectification(IL_d, IR_d, R, T', K);
+[JL, JR, HomographyL, HomographyR] = rectification(IL_d, IR_d, R, T', K,1);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% depth map 
 fprintf('6/8\t Creating Disparity Map\t\t 34.00s');
 start = tic;
 [disp_left,disp_right,IL_resized,IR_resized] = ...
-    calculateDisparityMap(JL,JR,1000,max_disp_factor,win_size_factor, 2,1);
+    calculateDisparityMap(JL,JR,1000,max_disp_factor,win_size_factor, gauss_filt,1,med_filt_window);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% synthese
 fprintf('7/8\t Synthesising new Image\t\t 1.80s');
 start = tic;
+
 IM = synthesis_both_sides(disp_left,disp_right, IL_resized, IR_resized, p);
+
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% derectification
 fprintf('8/8\t Inverting Rectification\t 0.10s');
 start = tic;
+%compute new homography
+%needs to be tested
+if(p~=0)
+    matches(3:4,:)=matches(1:2,:)+p*(matches(3:4,:)-matches(1:2,:));
+    E=eight_point_algorithm(matches, K);
+    [R, T, lambda] = motion_estimation(matches, E, K);
+    [~,  ~,  ~, HomographyR] = rectification(IL_d, IR_d, R, T', K,1);
+    output_image=cv_inv_rectify(IM,HomographyR);
+    
+end
+%{
 if p <= 0.5
     output_image = cv_inv_rectify(IM, HomographyL);
 else
     output_image = cv_inv_rectify(IM, HomographyR);
 end
+%}
 fprintf('\t\t%.2fs\n', toc(start));
 end

@@ -33,7 +33,7 @@ for c = 1:size(IL, 3)
     [JL(:,:,c),~,~] = my_imwarp(IL(:,:,c), HL, 'bilinear', bb);
 
     % Warp RIGHT
-    [JR(:,:,c),~,~] = my_imwarp(IR(:,:,c), -HR, 'bilinear', bb);
+    [JR(:,:,c),~,~] = my_imwarp(IR(:,:,c), HR, 'bilinear', bb);
 
 end
 
