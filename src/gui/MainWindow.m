@@ -1,7 +1,7 @@
 function varargout = MainWindow(varargin)
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 06-Sep-2018 19:03:59
+% Last Modified by GUIDE v2.5 11-Sep-2018 10:37:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -29,12 +29,14 @@ function runButton_Callback(hObject, eventdata, handles)
 p = get(handles.pSlider, 'Value');
 df = get(handles.dfSlider, 'Value');
 sw = get(handles.swSlider, 'Value');
+mf = get(handles.mfSlider, 'Value');
 
 % create new image
 output_img = free_viewpoint(handles.IL, handles.IR, handles.K,...
                         'p', p, ...
                         'max_disp_factor', df, ...
-                        'win_size_factor', sw);
+                        'win_size_factor', sw, ...
+                        'med_filt_window', mf);
 
 % display new image
 axes(handles.outputImage);
@@ -256,6 +258,59 @@ set(hObject, 'String', num2str(number));
 % --- Executes during object creation, after setting all properties.
 function swValue_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to swValue (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on slider movement.
+function mfSlider_Callback(hObject, eventdata, handles)
+number = get(handles.mfSlider,'Value'); 
+
+if isempty(number)
+    number = 0.0;
+elseif number < 0
+    number = 0.0;
+elseif number > 20.0
+    number = 20.0;
+end
+set(handles.mfValue, 'String', num2str(number));
+
+% --- Executes during object creation, after setting all properties.
+function mfSlider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to mfSlider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+
+function mfValue_Callback(hObject, eventdata, handles)
+str=get(hObject,'String');
+number = str2double(str);
+
+if isempty(number)
+    number = 0.0;
+elseif number < 0
+    number = 0.0;
+elseif number > 20
+    number = 20.0;
+end
+set(handles.mfSlider, 'Value', number);
+set(hObject, 'String', num2str(number));
+
+% --- Executes during object creation, after setting all properties.
+function mfValue_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to mfValue (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

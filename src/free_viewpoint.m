@@ -24,6 +24,7 @@ fprintf('Performing Process with\n');
 fprintf('p\t\t\t\t\t= %.2f\n', p);
 fprintf('DisparityMap Factor\t= %.2f\n', max_disp_factor);
 fprintf('WindowSize Factor\t= %.2f\n', win_size_factor);
+fprintf('Median Filter\t\t= %.2f\n', win_size_factor);
 fprintf('---------------------------------------------\n');
 fprintf('Step\t Task\t\t\t\t Time Est.\tTime\n');
 
