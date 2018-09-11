@@ -27,12 +27,14 @@ end
 function runButton_Callback(hObject, eventdata, handles)
 % load values
 p = get(handles.pSlider, 'Value');
+df = get(handles.dfSlider, 'Value');
+sw = get(handles.swSlider, 'Value');
 
 % create new image
 output_img = free_viewpoint(handles.IL, handles.IR, handles.K,...
                         'p', p, ...
-                        'max_disp_factor', handles.df, ...
-                        'win_size_factor', handles.sw);
+                        'max_disp_factor', df, ...
+                        'win_size_factor', sw);
 
 % display new image
 axes(handles.outputImage);
@@ -67,27 +69,29 @@ set(handles.pValue, 'String', num2str(number));
 function loadLeftImageButton_Callback(hObject, eventdata, handles)
 %load image
 [File_Name, Path_Name] = uigetfile('leftimage.JPG');
-axes(handles.leftImage);
 IL = imread([Path_Name,File_Name]);
 
-% save image
-setappdata(parent, 'IL', IL);
-
 % display image
-imshow(handles.IL);
+axes(handles.leftImage);
+imshow(IL);
+
+% save image
+handles.IL = IL;
+guidata(hObject,handles);
 
 
 function loadRightImageButton_Callback(hObject, eventdata, handles)
 %load image
 [File_Name, Path_Name] = uigetfile('rightimage.JPG');
-axes(handles.rightImage);
-IR = imread([Path_Name,File_Name]);
-
-% save image
-setappdata(parent, 'IR', IR);
+IL = imread([Path_Name,File_Name]);
 
 % display image
-imshow(handles.IR);
+axes(handles.leftImage);
+imshow(IL);
+
+% save image
+handles.IL = IL;
+guidata(hObject,handles);
 
 
 function pValue_Callback(hObject, eventdata, handles)

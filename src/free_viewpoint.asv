@@ -20,11 +20,10 @@ med_filt_window = g.Results.med_filt_window;
 gauss_filt = g.Results.gauss_filt;
 K = camera_param.IntrinsicMatrix';
 
-fprintf('Performing Process with\n');
-fprintf('p\t\t\t\t\t= %.2f\n', p);
-fprintf('DisparityMap Factor\t= %.2f\n', max_disp_factor);
-fprintf('WindowSize Factor\t= %.2f\n', win_size_factor);
-fprintf('---------------------------------------------\n');
+fprintf('Performing Process with\n'
+fprintf('p = \t\t\t\t%.2f\n', p);
+fprintf('DisparityMap Factor:\t%.2f', max_disp_factor);
+fprintf('WindowSize Factor:\t%.2f', win_size_factor
 fprintf('Step\t Task\t\t\t\t Time Est.\tTime\n');
 
 %% undistortion lens from images
