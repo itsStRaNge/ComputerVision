@@ -1,7 +1,7 @@
 function varargout = MainWindow(varargin)
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 11-Sep-2018 11:02:06
+% Last Modified by GUIDE v2.5 11-Sep-2018 14:09:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -25,7 +25,7 @@ end
 %% callback functions
 
 function preproButton_Callback(hObject,eventdata,handles)
-    [handles.matches,handles.E,handles.K,handles.JL,handles.JR,handles.HL,handles.HR]=preprocessing(handles.IL,handles.IR,handles.K);
+    [handles.matches,handles.E,handles.K,handles.JL,handles.JR,handles.HL,handles.HR]=preprocessing(handles.IL,handles.IR,handles.params);
     axes(handles.leftImage);
     imshow(handles.JL);
     axis off
@@ -42,7 +42,7 @@ sw = get(handles.swSlider, 'Value');
 mf = get(handles.mfSlider, 'Value');
 
 % create new image
-handles.output_image = free_viewpoint(handles.IL, handles.IR, handles.K,...
+handles.output_image = free_viewpoint(handles.IL, handles.IR, handles.params,...
                         'p', p, ...
                         'max_disp_factor', df, ...
                         'win_size_factor', sw, ...
@@ -65,7 +65,7 @@ p = get(handles.pSlider, 'Value');
 fprintf('7\t Synthesising new Image\t\t 40.00s');
 start = tic;
 handles.output_image = synthesis_both_sides(handles.disp_left,handles.disp_right, handles.IL_resized, handles.IR_resized, p);
-if(isprop(handles,'HL'))
+if(isfield(handles,'HL'))
     %image has been rectified/preprocessed
     %enable derectification
     if(p==0)
@@ -75,12 +75,13 @@ if(isprop(handles,'HL'))
     else
         handles.matches(3:4,:)=handles.matches(1:2,:)+p*(handles.matches(3:4,:)-handles.matches(1:2,:));
         E=eight_point_algorithm(handles.matches, handles.K);
-        [R, T, lambda] = motion_estimation(matches, E, K);
-        [~,  ~,  ~, HomographyR] = rectification(IL_d, IR_d, R, T', K,1);
-        handles.output_image=cv_inv_rectify(IM,HomographyR);
-
+        [R, T, lambda] = motion_estimation(handles.matches, E, handles.K);
+        [~,  ~,  ~, HomographyR] = rectification(handles.IL, handles.IR, R, T', handles.K,1);
+        handles.output_image=cv_inv_rectify(handles.output_image,HomographyR);
+        
     end
 end
+handles.output_image=imresize(handles.output_image,[size(handles.IL,1),size(handles.IR,2)]);
 axes(handles.leftImage);
     imshow(handles.IL);
     axis off
@@ -95,7 +96,7 @@ fprintf('\t\t%.2fs\n', toc(start));
 title_str = strcat('P = ', num2str(p));
 title(handles.outputImage,title_str);
 guidata(hObject,handles);
-imwrite(output_image,'output_image.png');
+imwrite(handles.output_image,'output_image.png');
 
 
 function dispButton_Callback(hObject, eventdata, handles)
@@ -136,7 +137,7 @@ function cameraCallibrationButton_Callback(hObject, eventdata, handles)
 load(strcat(Path_Name, File_Name), 'camera_param');
 
 % save data
-handles.K = camera_param;
+handles.params = camera_param;
 guidata(hObject,handles);
 
 % update textbox
@@ -165,6 +166,10 @@ imshow(IL);
 
 % save image
 handles.IL = IL;
+if(isfield(handles,'JL'))
+    handles=rmfield(handles,'JL');
+end
+
 guidata(hObject,handles);
 
 
@@ -179,7 +184,11 @@ imshow(IR);
 
 % save image
 handles.IR = IR;
+if(isfield(handles,'JR'))
+    handles=rmfield(handles,'JR');
+end
 guidata(hObject,handles);
+
 
 
 function pValue_Callback(hObject, eventdata, handles)
@@ -216,9 +225,9 @@ axes(handles.rightImage);
 imshow(handles.IR);
 
 % load default camera params
-load('camera_param_1.mat', 'camera_param');
-handles.K = camera_param;
-set(handles.cameraCallibrationText, 'String', 'camera_param_1.mat');
+load('camera_param_2.mat', 'camera_param');
+handles.params = camera_param;
+set(handles.cameraCallibrationText, 'String', 'camera_param_2.mat');
 
 % save data
 guidata(hObject,handles);
@@ -405,17 +414,3 @@ function mfValue_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in pushbutton7.
-function pushbutton7_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton7 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in pushbutton8.
-function pushbutton8_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton8 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)

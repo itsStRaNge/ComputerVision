@@ -84,11 +84,11 @@ fprintf('\t\t%.2fs\n', toc(start));
 fprintf('6/8\t Creating Disparity Map\t\t 34.00s');
 start = tic;
 [disp_left,disp_right,IL_resized,IR_resized] = ...
-    calculateDisparityMap(JL,JR,1000,max_disp_factor,win_size_factor, gauss_filt,1,med_filt_window);
+    calculateDisparityMap(JL,JR,800,max_disp_factor,win_size_factor, gauss_filt,1,round(med_filt_window));
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% synthese
-fprintf('7/8\t Synthesising new Image\t\t 1.80s');
+fprintf('7/8\t Synthesising new Image\t\t 40.00s');
 start = tic;
 
 IM = synthesis_both_sides(disp_left,disp_right, IL_resized, IR_resized, p);
@@ -96,7 +96,7 @@ IM = synthesis_both_sides(disp_left,disp_right, IL_resized, IR_resized, p);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% derectification
-fprintf('8/8\t Inverting Rectification\t 0.10s');
+fprintf('8/8\t Inverting Rectification\t 5.00s');
 start = tic;
 %compute new homography
 %needs to be tested

@@ -18,9 +18,9 @@ med_filt_window = g.Results.med_filt_window;
 gauss_filt = g.Results.gauss_filt;
 
 fprintf('Performing Process with\n');
-fprintf('DisparityMap Factor\t= %.2f\n', max_disp_factor);
-fprintf('WindowSize Factor\t= %.2f\n', win_size_factor);
-fprintf('Median Filter\t\t= %.2f\n', win_size_factor);
+fprintf('DisparityMap Factor\t= %.3f\n', max_disp_factor);
+fprintf('WindowSize Factor\t= %.3f\n', win_size_factor);
+fprintf('Median Filter\t\t= %.3f\n', med_filt_window);
 fprintf('---------------------------------------------\n');
 fprintf('Step\t Task\t\t\t\t Time Est.\tTime\n');
 
@@ -28,7 +28,7 @@ fprintf('Step\t Task\t\t\t\t Time Est.\tTime\n');
 fprintf('6\t Creating Disparity Map\t\t 15.00s');
 start = tic;
 [disp_left,disp_right,IL_resized,IR_resized] = ...
-    calculateDisparityMap(JL,JR,1000,max_disp_factor,win_size_factor, gauss_filt,1,med_filt_window);
+    calculateDisparityMap(JL,JR,800,max_disp_factor,win_size_factor, gauss_filt,1,round(med_filt_window));
 fprintf('\t\t%.2fs\n', toc(start));
 
 end

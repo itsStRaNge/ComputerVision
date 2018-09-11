@@ -1,5 +1,6 @@
 function im_synth = synthesis_both_sides(disp_left,disp_right,leftrgb,rightrgb,p)
     
+    
     %%adjust gain and bias for image merging later,
     %
     leftrgb=single(leftrgb);
