@@ -83,14 +83,14 @@ guidata(hObject,handles);
 function loadRightImageButton_Callback(hObject, eventdata, handles)
 %load image
 [File_Name, Path_Name] = uigetfile('rightimage.JPG');
-IL = imread([Path_Name,File_Name]);
+IR = imread([Path_Name,File_Name]);
 
 % display image
-axes(handles.leftImage);
-imshow(IL);
+axes(handles.rightImage);
+imshow(IR);
 
 % save image
-handles.IL = IL;
+handles.IR = IR;
 guidata(hObject,handles);
 
 
