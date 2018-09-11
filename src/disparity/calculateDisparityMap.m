@@ -1,5 +1,5 @@
 function [disp_left,disp_right,IL,IR] = calculateDisparityMap(IL,IR, ...
-    max_image_size,max_disp_factor,window_size_factor,gauss_filt,outlier_compensation)
+    max_image_size,max_disp_factor,window_size_factor,gauss_filt,outlier_compensation,median_filter)
 %Inputs: IL,IR rectified color images
 %        mode - either 'feat' or 'block' to choose the two different modes.
 %               block seems to perform better
@@ -46,7 +46,7 @@ end
 %%end of preprocessing
 
         disp_left =stereomatch(IL_prep,IR_prep,window_size,max_disp,0);
-        disp_right=stereomatch(fliplr(IR_prep),fliplr(IL_prep),window_size,max_disp,1);
+        disp_right=stereomatch(fliplr(IR_prep),fliplr(IL_prep),window_size,max_disp,0);
         disp_right=fliplr(disp_right);
 
     %check for bad vals
@@ -54,6 +54,11 @@ end
     disp_left(disp_left<=-max_disp)=-max_disp;
     disp_right(disp_right>=max_disp)=max_disp;
     disp_right(disp_right<=-max_disp)=-max_disp;
+    
+    if(median_filter~=0)
+        disp_left=medFilter(disp_left,median_filter);
+        disp_right=medFilter(disp_right,median_filter);
+    end
 
     %size back to original if needed
     if(size(IL,1)>max_image_size ||size(IL,2)>max_image_size)
@@ -89,4 +94,6 @@ end
         disp_right(disp_right<a)=disp_r_fill(disp_right<a);
         disp_right(disp_right>b)=disp_r_fill(disp_right>b);
     end
+    
+    
 end
