@@ -98,13 +98,8 @@ guidata(hObject,handles);
 imwrite(output_image,'output_image.png');
 
 
-    
-    
-
-
 function dispButton_Callback(hObject, eventdata, handles)
 % load values
-p = get(handles.pSlider, 'Value');
 df = get(handles.dfSlider, 'Value');
 sw = get(handles.swSlider, 'Value');
 mf = get(handles.mfSlider, 'Value');
@@ -116,14 +111,12 @@ if(~isfield(handles,'JL'))
 end
 
 % create disp values
-
 [handles.disp_left,handles.disp_right,handles.IL_resized,handles.IR_resized] = disparity_estimation(handles.JL, handles.JR,...
                         'max_disp_factor', df, ...
                         'win_size_factor', sw, ...
                         'med_filt_window', mf);
 
 % display new image
-
  axes(handles.leftImage);
     imagesc(handles.disp_left);
     colormap(jet);
