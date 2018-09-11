@@ -41,7 +41,7 @@ feat = feature_extracting(IL_d,IR_d,false);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% feature matching
-fprintf('2/8\t Feature Matching\t\t 15.00s'); 
+fprintf('3/8\t Feature Matching\t\t 15.00s'); 
 start = tic;
 matches = feature_matching(feat.P1, feat.D1, feat.P2, feat.D2);
 matches = ransac_algorithm(matches(:,1:200), 'epsilon', 0.77, 'tolerance', 0.15);
