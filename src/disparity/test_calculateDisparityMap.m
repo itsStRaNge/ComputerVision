@@ -1,8 +1,8 @@
 %load('rectificated.mat', 'JL');
 %load('rectificated.mat', 'JR');
 clear
-JL=imread('L2_recti_cropped.png');
-JR=imread('R2_recti_cropped.png');
+JL=imread('bikeL.png');
+JR=imread('bikeR.png');
 window_size=0.005;
 max_disp_factor=0.2;
 

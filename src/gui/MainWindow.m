@@ -54,6 +54,9 @@ imshow(handles.output_image);
 axis off
 title_str = strcat('P = ', num2str(p));
 title(handles.outputImage,title_str);
+imwrite(handles.output_image,'output_image.png');
+guidata(hObject,handles);
+
 
 function synthButton_Callback(hObject,eventdata,handles)
 
@@ -92,6 +95,8 @@ fprintf('\t\t%.2fs\n', toc(start));
 title_str = strcat('P = ', num2str(p));
 title(handles.outputImage,title_str);
 guidata(hObject,handles);
+imwrite(output_image,'output_image.png');
+
 
     
     
