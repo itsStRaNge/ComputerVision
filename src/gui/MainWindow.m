@@ -62,7 +62,7 @@ function synthButton_Callback(hObject,eventdata,handles)
 
 p = get(handles.pSlider, 'Value');
 
-fprintf('7\t Synthesising new Image\t\t 40.00s');
+fprintf('7\t Synthesising new Image\t\t 50.00s');
 start = tic;
 handles.output_image = synthesis_both_sides(handles.disp_left,handles.disp_right, handles.IL_resized, handles.IR_resized, p);
 if(isfield(handles,'HL'))

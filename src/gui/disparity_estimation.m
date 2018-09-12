@@ -25,7 +25,7 @@ fprintf('---------------------------------------------\n');
 fprintf('Step\t Task\t\t\t\t Time Est.\tTime\n');
 
 %% depth map 
-fprintf('6\t Creating Disparity Map\t\t 15.00s');
+fprintf('6\t Creating Disparity Map\t\t 6.00s');
 start = tic;
 [disp_left,disp_right,IL_resized,IR_resized] = ...
     calculateDisparityMap(JL,JR,800,max_disp_factor,win_size_factor, gauss_filt,1,round(med_filt_window));
