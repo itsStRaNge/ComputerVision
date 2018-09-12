@@ -48,7 +48,7 @@ IR_d = undistort_image(IR,camera_param.FocalLength(1),camera_param.PrincipalPoin
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% feature extracting
-fprintf('2/8\t Extracting SURF Features\t 20.00s'); 
+fprintf('2/8\t Extracting SURF Features\t 10.00s'); 
 start = tic;
 feat = feature_extracting(IL_d,IR_d,false);
 fprintf('\t\t%.2fs\n', toc(start));
@@ -68,27 +68,27 @@ E = eight_point_algorithm(matches, K);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% compute eukledian motion
-fprintf('4/8\t Computing Motion\t\t 0.10s'); 
+fprintf('4/8\t Computing Motion\t\t 0.00s'); 
 start = tic;
 [R, T, lambda] = motion_estimation(matches, E, K);
 fprintf('\t\t%.2fs\n', toc(start));
 
 
 %% rectificate images (crop or not)
-fprintf('5/8\t Apply Rectification\t\t 3.80s');
+fprintf('5/8\t Apply Rectification\t\t 4.00s');
 start = tic;
 [JL, JR, HomographyL, HomographyR] = rectification(IL_d, IR_d, R, T', K,1);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% depth map 
-fprintf('6/8\t Creating Disparity Map\t\t 34.00s');
+fprintf('6/8\t Creating Disparity Map\t\t 6.00s');
 start = tic;
 [disp_left,disp_right,IL_resized,IR_resized] = ...
     calculateDisparityMap(JL,JR,800,max_disp_factor,win_size_factor, gauss_filt,1,round(med_filt_window));
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% synthese
-fprintf('7/8\t Synthesising new Image\t\t 40.00s');
+fprintf('7/8\t Synthesising new Image\t\t 50.00s');
 start = tic;
 
 IM = synthesis_both_sides(disp_left,disp_right, IL_resized, IR_resized, p);
@@ -96,7 +96,7 @@ IM = synthesis_both_sides(disp_left,disp_right, IL_resized, IR_resized, p);
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% derectification
-fprintf('8/8\t Inverting Rectification\t 5.00s');
+fprintf('8/8\t Inverting Rectification\t 1.50s');
 start = tic;
 %compute new homography
 %needs to be tested

@@ -17,13 +17,13 @@ IL=imread('L2.JPG');
 IR=imread('R2.JPG');
 
 %% load camera params
-load('camera_param_1.mat', 'camera_param');
+load('camera_param_2.mat', 'camera_param');
 
 %% count time
 tic;
 
 %% create new image
-output_image = free_viewpoint(IL, IR, camera_param, 'p', 0.75);
+output_image = free_viewpoint(IL, IR, camera_param, 'p', 0.5);
 
 %% stop time
 elapsed_time=toc;
