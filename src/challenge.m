@@ -10,6 +10,8 @@ members = {'Alexander Lechthaler', 'Patrick von Velasco', 'Lukas Bernhard', 'Tho
 % Email-Adress (from Moodle!):
 mail = {'alexander.lechthaler@tum.de', 'ga38kon@mytum.de', 'l.bernhard@tum.de', 't.hartmann@tum.de'};
 
+%% Add Pathes
+addpath(genpath(pwd))
 %% Load images and K
 IL=imread('L2.JPG');
 IR=imread('R2.JPG');
@@ -24,7 +26,8 @@ tic;
 output_image = free_viewpoint(IL, IR, camera_param, 'p', 0.75);
 
 %% stop time
-fprintf('End\t Total Time\t\t\t\t\t%.2fs\n', toc);
+elapsed_time=toc;
+fprintf('End\t Total Time\t\t\t\t\t%.2fs\n', elapsed_time);
 
 %% Display Output
 output_image=imresize(output_image,[size(IL,1),size(IL,2)]);

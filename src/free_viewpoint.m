@@ -21,7 +21,7 @@ gauss_filt = g.Results.gauss_filt;
 K = camera_param.IntrinsicMatrix';
 
 fprintf('Performing Process with\n');
-fprintf('p\t\t\t\t\t= %.2f\n', p);
+fprintf('p\t\t\t= %.2f\n', p);
 fprintf('DisparityMap Factor\t= %.2f\n', max_disp_factor);
 fprintf('WindowSize Factor\t= %.2f\n', win_size_factor);
 fprintf('Median Filter\t\t= %.2f\n', med_filt_window);
@@ -48,7 +48,7 @@ IR_d = undistort_image(IR,camera_param.FocalLength(1),camera_param.PrincipalPoin
 fprintf('\t\t%.2fs\n', toc(start));
 
 %% feature extracting
-fprintf('2/8\t Extracting SURF Features\t\t 20.00s'); 
+fprintf('2/8\t Extracting SURF Features\t 20.00s'); 
 start = tic;
 feat = feature_extracting(IL_d,IR_d,false);
 fprintf('\t\t%.2fs\n', toc(start));
