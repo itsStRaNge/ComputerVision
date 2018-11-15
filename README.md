@@ -26,13 +26,13 @@ Synthesised image
 ## Examples
 Complete run through the algorithm
 
-![Alt text](/output/testset 2/000.JPG "Left part of stereo image pair")
+![Alt text](/output/testset%202/000.JPG "Left part of stereo image pair")
 Left part of stereo image pair
 
-![Alt text](/output/testset 2/050.png "Angle between input images")
+![Alt text](/output/testset%202/050.png "Angle between input images")
 Angle between input images
 
-![Alt text](/output/testset 2/100.JPG "Right part of stereo image pair")
+![Alt text](/output/testset%202/100.JPG "Right part of stereo image pair")
 Right part of stereo image pair
 
 ### Displaying Synthesis Algorithm Only
