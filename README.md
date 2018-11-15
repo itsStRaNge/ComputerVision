@@ -1,7 +1,7 @@
 # ComputerVision Challenge
 This project is part of the course Computer Vision at the Technical University Munich. It is about creating a image that 
 shows a sceen between a stereo image pair. Patrick von Velasco, Alexander Lechthaler, Lukas Bernhard, Thomas Hartmann contributed to 
-this project and a german and more detailed documentation can be found at "Computer Vision Challenge Group 37.pdf".
+this project and a german and more detailed documentation can be found at [Computer Vision Challenge Group 37.pdf](https://github.com/itsStRaNge/ComputerVision/blob/master/Computer%20Vision%20Challenge%20Group%2037.pdf "Documentation").
 
 ## Procedure
 **Input**
